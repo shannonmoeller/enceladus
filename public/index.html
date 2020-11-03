@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8" />
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=0,width=device-width" />
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover,width=device-width" />
 <link rel="manifest" href="/manifest.json" />
 
 <title>Enceladus</title>
@@ -14,15 +14,21 @@
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200&display=swap');
 
-	* {
-		margin: 0;
-		padding: 0;
+	*,
+	*::before,
+	*::after {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		appearance: none;
+		box-sizing: border-box;
+		margin: unset;
+		padding: unset;
+		background: unset;
+		border: unset;
 		color: inherit;
 		font: inherit;
-	}
-
-	html {
-		font-size: 62.5%;
+		outline: unset;
+		text-decoration: unset;
 	}
 
 	body {
@@ -37,6 +43,7 @@
 		color: hsl(162 100% 80%);
 		font: 200 1.6rem Oxanium, sans-serif;
 		overflow: hidden;
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	}
 
 	main {
@@ -50,12 +57,11 @@
 
 	h1 {
 		display: inline-block;
-		background-image:
-			linear-gradient(to bottom, hsl(162 100% 40%) 10%, hsl(162 100% 50%) 110%);
-		-webkit-background-clip: text;
-		background-clip: text;
-		color: transparent;
-		text-shadow: 0 -2px 2px hsl(162 100% 10%);
+		color: hsl(162 100% 8%);
+		text-shadow:
+			0 0 0.1rem hsl(162 100% 8%),
+			-0.05rem 0.1rem 0.1rem hsl(162 100% 40%),
+			0.05rem 0.1rem 0.1rem hsl(162 100% 40%);
 		font-size: clamp(1.6rem, 16vw, 16rem);
 	}
 </style>
