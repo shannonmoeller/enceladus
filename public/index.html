@@ -92,6 +92,13 @@
 		height: 100%;
 		width: 100%;
 		overflow: hidden;
+		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+		touch-action: none;
+		-webkit-touch-callout: none;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
 	}
 
 	html {
@@ -107,7 +114,6 @@
 			linear-gradient(to bottom, hsl(162 40% 0%), hsl(162 0% 1%) 20%, hsl(162 20% 8%) 95%, hsl(162 20% 10%));
 		color: hsl(var(--primary) 80%);
 		font: 200 2.4rem/1 "Oxanium", "Helvetica Neue", arial, sans-serif;
-		-webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 	}
 
 	.lobby-title {
