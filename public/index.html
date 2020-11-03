@@ -7,40 +7,54 @@
 </script>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200&display=swap');
+	@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200&display=swap');
 
-    * {
-        margin: 0;
-        padding: 0;
-        color: inherit;
-        font: inherit;
-    }
+	* {
+		margin: 0;
+		padding: 0;
+		color: inherit;
+		font: inherit;
+	}
 
-    html {
-        font-size: 62.5%;
-    }
+	html {
+		font-size: 62.5%;
+	}
 
-    body {
-        background: hsl(180 100% 10%);
-        color: hsl(100 100% 60%);
-        font: 200 1.6rem Oxanium, sans-serif;
-        overflow: hidden;
-    }
+	body {
+		background-color: hsl(210 0% 6%);
+		background-image:
+			radial-gradient(ellipse farthest-corner at 15% 360%, hsl(162 100% 50% / 50%), hsl(162 100% 50% / 0%) 58%),
+			radial-gradient(circle farthest-side at 70% 200%, hsl(162 100% 50% / 100%), hsl(162 100% 50% / 0%) 58%),
+			radial-gradient(circle farthest-side at 10% 106%, hsl(162 100% 50% / 50%), hsl(162 100% 50% / 0%) 5%),
+			radial-gradient(circle farthest-side at 30% 103%, hsl(162 100% 50% / 30%), hsl(162 100% 50% / 0%) 5%),
+			radial-gradient(circle farthest-side at 90% 105%, hsl(162 100% 50% / 40%), hsl(162 100% 50% / 0%) 5%),
+			linear-gradient(to bottom, hsl(210 100% 0%), hsl(210 100% 6%) 20%, hsl(210 60% 12%));
+		color: hsl(162 100% 80%);
+		font: 200 1.6rem Oxanium, sans-serif;
+		overflow: hidden;
+	}
 
-    main {
-        display: flex;
-        place-content: center;
-        place-items: center;
-        height: 100vh;
-        width: 100vw;
-    }
+	main {
+		display: flex;
+		flex-direction: column;
+		place-content: center;
+		place-items: center;
+		height: 100vh;
+		width: 100vw;
+	}
 
-    h1 {
-        display: inline-block;
-        font-size: clamp(1.6rem, 16vw, 7.2rem);
-    }
+	h1 {
+		display: inline-block;
+		background-image:
+			linear-gradient(to bottom, hsl(162 100% 40%) 10%, hsl(162 100% 50%) 110%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+		text-shadow: 0 -2px 2px hsl(162 100% 10%);
+		font-size: clamp(1.6rem, 16vw, 16rem);
+	}
 </style>
 
 <main>
-    <h1>Enceladus</h1>
+	<h1>Enceladus</h1>
 </main>
