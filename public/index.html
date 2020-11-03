@@ -7,6 +7,40 @@
 </script>
 
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200&display=swap');
+
+    * {
+        margin: 0;
+        padding: 0;
+        color: inherit;
+        font: inherit;
+    }
+
+    html {
+        font-size: 62.5%;
+    }
+
+    body {
+        background: hsl(180 100% 10%);
+        color: hsl(100 100% 60%);
+        font: 200 1.6rem Oxanium, sans-serif;
+        overflow: hidden;
+    }
+
+    main {
+        display: flex;
+        place-content: center;
+        place-items: center;
+        height: 100vh;
+        width: 100vw;
+    }
+
+    h1 {
+        display: inline-block;
+        font-size: clamp(1.6rem, 16vw, 7.2rem);
+    }
 </style>
 
-<h1>Enceladus</h1>
+<main>
+    <h1>Enceladus</h1>
+</main>
