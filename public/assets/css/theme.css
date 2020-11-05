@@ -1,0 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200');
+
+:root {
+	--primary-h: 162;
+	--primary-s: 100%;
+	--primary-l: 50%;
+	--primary-hs: var(--primary-h) var(--primary-s);
+	--primary-hsl: var(--primary-hs) var(--primary-l);
+	--font-stack: 'Oxanium', 'Helvetica Neue', arial, sans-serif;
+
+	--transition-in: opacity 500ms ease-in, transform 500ms ease-in,
+		visibility 0ms;
+	--transition-out: opacity 500ms ease-in, transform 500ms ease-in,
+		visibility 500ms;
+}

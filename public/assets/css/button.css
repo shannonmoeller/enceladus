@@ -1,0 +1,18 @@
+.button {
+	cursor: pointer;
+	padding: 0.25em 1em;
+}
+
+.button:focus {
+	outline: 1px solid;
+}
+
+@supports selector(:focus-visible) {
+	.button:focus {
+		outline: 0;
+	}
+
+	.button:focus-visible {
+		outline: 1px solid;
+	}
+}

@@ -1,0 +1,50 @@
+.game {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	transform-origin: 50% 40%;
+	transition: var(--transition-in);
+}
+
+.game.closed {
+	opacity: 0;
+	transform: scale(1.1);
+	pointer-events: none;
+	transition: var(--transition-out);
+	visibility: hidden;
+}
+
+.game-scene {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.game-left {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 50%;
+	opacity: 0.0001;
+}
+
+.game-right {
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 100%;
+	width: 50%;
+	opacity: 0.0001;
+}
+
+.game-pause {
+	position: absolute;
+	top: 0.5em;
+	left: 50%;
+	transform: translateX(-50%);
+}

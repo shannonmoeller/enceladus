@@ -1,0 +1,36 @@
+.lobby {
+	display: grid;
+	place-content: center;
+	place-items: center;
+	gap: 1em;
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	transform-origin: 50% 60%;
+	transition: var(--transition-in);
+}
+
+.lobby.closed {
+	opacity: 0;
+	transform: scale(0.9);
+	pointer-events: none;
+	transition: var(--transition-out);
+	visibility: hidden;
+}
+
+.lobby-title {
+	display: inline-block;
+	color: hsl(var(--primary-h) var(--primary-s) 8%);
+	font-size: clamp(1.6rem, 13vw, 16rem);
+	text-shadow: 0 0 2px hsl(var(--primary-hs) 8%),
+		0px 2px 0 hsl(var(--primary-hs) 40%), 0px 2px 1px hsl(var(--primary-hs) 40%),
+		0px 2px 3px hsl(var(--primary-hs) 10%), 0px -1px 0 hsl(var(--primary-hs) 0%);
+}
+
+@media (orientation: portrait) {
+	.lobby-title {
+		font-size: clamp(1.6rem, 16vw, 16rem);
+	}
+}
