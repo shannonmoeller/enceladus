@@ -1,5 +1,5 @@
 import { createGame } from './game.js';
-import { clone, refs } from './vendor.js';
+import { clone, refs, createContext, resizeContext } from './vendor.js';
 
 function prevent(event) {
 	event.preventDefault();
@@ -8,33 +8,46 @@ function prevent(event) {
 export function EnceladusGame(el) {
 	const view = clone('gameView');
 	const { scene, left, right } = refs(view);
-	const game = createGame(scene);
 
-	el.start = game.start;
-	el.pause = game.stop;
+	const context = createContext(scene);
+	const game = createGame(context);
 
-	left.onclick = prevent;
-	left.oncontextmenu = prevent;
-	right.onclick = prevent;
-	right.oncontextmenu = prevent;
+	el.start = () => {
+		resizeContext(context);
+		game.start();
+	};
 
-	left.onpointerdown = (event) => {
+	el.pause = () => {
+		game.stop();
+	};
+
+	left.addEventListener('click', prevent);
+	left.addEventListener('contextmenu', prevent);
+
+	left.addEventListener('pointerdown', (event) => {
+		event.preventDefault();
 		game.left = true;
-	};
+	});
 
-	left.onpointerup = (event) => {
+	left.addEventListener('pointerup', (event) => {
+		event.preventDefault();
 		game.left = false;
-	};
+	});
 
-	right.onpointerdown = (event) => {
+	right.addEventListener('click', prevent);
+	right.addEventListener('contextmenu', prevent);
+
+	right.addEventListener('pointerdown', (event) => {
+		event.preventDefault();
 		game.right = true;
-	};
+	});
 
-	right.onpointerup = (event) => {
+	right.addEventListener('pointerup', (event) => {
+		event.preventDefault();
 		game.right = false;
-	};
+	});
 
-	document.body.onkeydown = (event) => {
+	document.body.addEventListener('keydown', (event) => {
 		if (!game.isPlaying) {
 			return;
 		}
@@ -51,9 +64,9 @@ export function EnceladusGame(el) {
 				game.right = true;
 				break;
 		}
-	};
+	});
 
-	document.body.onkeyup = (event) => {
+	document.body.addEventListener('keyup', (event) => {
 		if (!game.isPlaying) {
 			return;
 		}
@@ -70,7 +83,15 @@ export function EnceladusGame(el) {
 				game.right = false;
 				break;
 		}
-	};
+	});
+
+	window.addEventListener(
+		'resize',
+		() => {
+			resizeContext(context);
+		},
+		{ passive: true }
+	);
 
 	el.prepend(view);
 }

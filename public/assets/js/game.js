@@ -1,34 +1,14 @@
-import {
-	createTickLoop,
-	createContext,
-	clearContext,
-	resizeContext,
-} from './vendor.js';
+import { createTickLoop, clearContext } from './vendor.js';
 
-const DRAG = 0.997;
-const GRAVITY = -0.0981;
+const WATER_DRAG = 0.98;
+const WATER_BOUYANCY = 0.05;
+const GAS_DRAG = 0.99;
+const GAS_GRAVITY = 0.05;
 
-function drag([old, curr], value = DRAG) {
-	const velocity = curr - old;
-
-	return [old, old + velocity * value];
-}
-
-function gravity([old, curr], value = GRAVITY) {
-	return [old, curr + value];
-}
-
-function move([old, curr]) {
-	const velocity = curr - old;
-
-	return [curr, curr + velocity];
-}
-
-export function createGame(canvas) {
+export function createGame(ctx) {
 	let left = false;
 	let right = false;
 
-	const context = createContext(canvas);
 	const player = {
 		x: 0,
 		x0: 0,
@@ -36,28 +16,37 @@ export function createGame(canvas) {
 		y0: 0,
 	};
 
-	let loop = createTickLoop({
+	const loop = createTickLoop({
 		update() {
 			let { x, x0, y, y0 } = player;
-
 			let vx = x - x0;
 			let vy = y - y0;
 
+			let isInGas = x > 200 && x < 300 && y > 100 && y < 200;
+
 			if (left) {
-				vx -= 0.025;
+				vx -= 0.03;
 			}
 
 			if (right) {
-				vx += 0.025;
+				vx += 0.03;
 			}
 
-			if (left || right) {
+			if (left && right) {
+				vy += 0.125;
+			} else if (left || right) {
 				vy += 0.1;
 			}
 
-			vx *= 0.98;
-			vy *= 0.98;
-			vy -= 0.05;
+			if (isInGas) {
+				vx *= GAS_DRAG;
+				vy *= GAS_DRAG;
+				vy += GAS_GRAVITY;
+			} else {
+				vx *= WATER_DRAG;
+				vy *= WATER_DRAG;
+				vy -= WATER_BOUYANCY;
+			}
 
 			player.x = Math.max(0, x + vx);
 			player.x0 = x;
@@ -66,9 +55,16 @@ export function createGame(canvas) {
 		},
 
 		render() {
-			clearContext(context);
-			context.fillStyle = 'white';
-			context.fillRect(player.x, player.y, 10, 10);
+			clearContext(ctx);
+
+			ctx.fillStyle = 'hsl(162 100% 50% / 20%)';
+			ctx.fillRect(200, 100, 100, 100);
+
+			ctx.fillStyle = 'red';
+			ctx.fillRect(player.x0, player.y0, 10, 10);
+
+			ctx.fillStyle = 'white';
+			ctx.fillRect(player.x, player.y, 10, 10);
 		},
 	});
 
@@ -86,7 +82,6 @@ export function createGame(canvas) {
 		},
 
 		start() {
-			resizeContext(context);
 			loop.start();
 		},
 
