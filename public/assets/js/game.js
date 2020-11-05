@@ -1,8 +1,9 @@
 import { createTickLoop, clearContext } from './vendor.js';
 
+const TAU = 2 * Math.PI;
 const WATER_DRAG = 0.98;
 const WATER_BOUYANCY = 0.05;
-const GAS_DRAG = 0.99;
+const GAS_DRAG = 0.999;
 const GAS_GRAVITY = 0.05;
 
 export function createGame(ctx) {
@@ -22,8 +23,6 @@ export function createGame(ctx) {
 			let vx = x - x0;
 			let vy = y - y0;
 
-			let isInGas = x > 200 && x < 300 && y > 100 && y < 200;
-
 			if (left) {
 				vx -= 0.03;
 			}
@@ -38,7 +37,7 @@ export function createGame(ctx) {
 				vy += 0.1;
 			}
 
-			if (isInGas) {
+			if (x > 200 && x < 300 && y > 100 && y < 200) {
 				vx *= GAS_DRAG;
 				vy *= GAS_DRAG;
 				vy += GAS_GRAVITY;
@@ -61,10 +60,16 @@ export function createGame(ctx) {
 			ctx.fillRect(200, 100, 100, 100);
 
 			ctx.fillStyle = 'red';
-			ctx.fillRect(player.x0, player.y0, 10, 10);
+			ctx.beginPath();
+			ctx.arc(player.x0, player.y0, 5.5, 0, TAU);
+			ctx.fill();
+			ctx.closePath();
 
 			ctx.fillStyle = 'white';
-			ctx.fillRect(player.x, player.y, 10, 10);
+			ctx.beginPath();
+			ctx.arc(player.x, player.y, 5, 0, TAU);
+			ctx.fill();
+			ctx.closePath();
 		},
 	});
 
