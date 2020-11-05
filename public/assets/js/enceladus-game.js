@@ -1,6 +1,10 @@
 import { createGame } from './game.js';
 import { clone, refs } from './vendor.js';
 
+function prevent(event) {
+	event.preventDefault();
+}
+
 export function EnceladusGame(el) {
 	const view = clone('gameView');
 	const { scene, left, right } = refs(view);
@@ -9,27 +13,28 @@ export function EnceladusGame(el) {
 	el.start = game.start;
 	el.pause = game.stop;
 
+	left.onclick = prevent;
+	left.oncontextmenu = prevent;
+	right.onclick = prevent;
+	right.oncontextmenu = prevent;
+
 	left.onpointerdown = (event) => {
-		event.preventDefault();
 		game.left = true;
 	};
 
 	left.onpointerup = (event) => {
-		event.preventDefault();
 		game.left = false;
 	};
 
 	right.onpointerdown = (event) => {
-		event.preventDefault();
 		game.right = true;
 	};
 
 	right.onpointerup = (event) => {
-		event.preventDefault();
 		game.right = false;
 	};
 
-	document.body.addEventListener('keydown', (event) => {
+	document.body.onkeydown = (event) => {
 		if (!game.isPlaying) {
 			return;
 		}
@@ -46,9 +51,9 @@ export function EnceladusGame(el) {
 				game.right = true;
 				break;
 		}
-	});
+	};
 
-	document.body.addEventListener('keyup', (event) => {
+	document.body.onkeyup = (event) => {
 		if (!game.isPlaying) {
 			return;
 		}
@@ -65,7 +70,7 @@ export function EnceladusGame(el) {
 				game.right = false;
 				break;
 		}
-	});
+	};
 
 	el.prepend(view);
 }
