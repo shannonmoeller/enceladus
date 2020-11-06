@@ -1,3 +1,7 @@
+/**
+ * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
 import { createGame } from './game.js';
 import { clone, refs, createContext, resizeContext } from './vendor.js';
 

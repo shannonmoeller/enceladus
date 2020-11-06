@@ -1,3 +1,7 @@
+/**
+ * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
 import { refs } from './vendor.js';
 
 export function EnceladusApp(el) {

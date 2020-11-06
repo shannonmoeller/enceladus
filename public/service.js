@@ -1,3 +1,7 @@
+/**
+ * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
 const CACHE = 'offline';
 
 async function toCache(event, response) {

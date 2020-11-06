@@ -1,3 +1,7 @@
+/**
+ * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
 import { createTickLoop, clearContext } from './vendor.js';
 
 const TAU = 2 * Math.PI;
