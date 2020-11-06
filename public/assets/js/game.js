@@ -4,7 +4,7 @@ const TAU = 2 * Math.PI;
 const WATER_DRAG = 0.98;
 const WATER_BOUYANCY = 0.05;
 const GAS_DRAG = 0.999;
-const GAS_GRAVITY = 0.05;
+const GAS_GRAVITY = 0.04;
 
 export function createGame(ctx) {
 	let left = false;
