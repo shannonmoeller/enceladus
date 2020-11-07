@@ -23,7 +23,8 @@ export function createGame(ctx) {
 
 	const loop = createTickLoop({
 		update() {
-			let { x, x0, y, y0 } = player;
+			const { x, x0, y, y0 } = player;
+
 			let vx = x - x0;
 			let vy = y - y0;
 
@@ -41,7 +42,9 @@ export function createGame(ctx) {
 				vy += 0.1;
 			}
 
-			if (x > 200 && x < 300 && y > 100 && y < 200) {
+			const isInGas = x > 200 && x < 300 && y > 100 && y < 200;
+
+			if (isInGas) {
 				vx *= GAS_DRAG;
 				vy *= GAS_DRAG;
 				vy += GAS_GRAVITY;
