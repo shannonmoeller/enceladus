@@ -1,3 +1,7 @@
+/**
+ * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
 const NOTES = {
 	'C': 16.35,
 	'C#': 17.32,

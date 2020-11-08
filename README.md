@@ -6,4 +6,4 @@ https://enceladus.shannonmoeller.com
 
 ----
 
-Copyright © [Shannon Moeller](http://shannonmoeller.com). All rights reserved.
+Copyright © [Shannon Moeller](http://shannonmoeller.com). All rights reserved. Learn, don't loot.
