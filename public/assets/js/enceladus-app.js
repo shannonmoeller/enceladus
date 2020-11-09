@@ -2,7 +2,7 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import { playSong } from './cello.js';
+import { playSong } from './music.js';
 import { refs } from './vendor.js';
 
 export function EnceladusApp(el) {
@@ -12,7 +12,7 @@ export function EnceladusApp(el) {
 		lobby.classList.add('closed');
 		game.classList.remove('closed');
 		game.start();
-		playSong();
+		// playSong();
 	};
 
 	pause.onclick = () => {

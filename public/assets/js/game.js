@@ -2,6 +2,8 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
+import { lune } from '../data/lune.js';
+import { prelude } from '../data/prelude.js';
 import { createTickLoop, clearContext } from './vendor.js';
 
 const TAU = 2 * Math.PI;
@@ -66,17 +68,25 @@ export function createGame(ctx) {
 			ctx.fillStyle = 'hsl(162 100% 50% / 20%)';
 			ctx.fillRect(200, 100, 100, 100);
 
+			ctx.fillStyle = 'seagreen';
+			ctx.beginPath();
+			ctx.moveTo(0, 0);
+			lune.forEach((y, x) => y && ctx.lineTo(x * 2, y * 0.1));
+			ctx.lineTo(lune.length * 2, 0);
+			ctx.closePath();
+			ctx.fill();
+
 			ctx.fillStyle = 'red';
 			ctx.beginPath();
 			ctx.arc(player.x0, player.y0, 5.5, 0, TAU);
-			ctx.fill();
 			ctx.closePath();
+			ctx.fill();
 
 			ctx.fillStyle = 'white';
 			ctx.beginPath();
 			ctx.arc(player.x, player.y, 5, 0, TAU);
-			ctx.fill();
 			ctx.closePath();
+			ctx.fill();
 		},
 	});
 

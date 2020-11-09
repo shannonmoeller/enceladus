@@ -89,24 +89,63 @@ const prelude = [
 
 const audio = new (window.AudioContext || window.webkitAudioContext)();
 
+function createDistortion(amount) {
+	const samples = 256;
+
+	return new Float32Array(samples).map((_, i) => {
+		let x = (i * 2) / samples - 1;
+		return (x * (Math.PI + amount)) / (Math.PI + amount * Math.abs(x));
+	});
+}
+
 export async function playSong() {
 	const attack = 0.001;
 	const decay = 0.04;
 
+	const oscillatorNodeA = audio.createOscillator();
+	oscillatorNodeA.frequency.setValueAtTime(
+		NOTES[prelude[0]],
+		audio.currentTime
+	);
+	oscillatorNodeA.type = 'triangle';
+
+	const oscillatorNodeB = audio.createOscillator();
+	oscillatorNodeB.detune.setValueAtTime(300, audio.currentTime);
+	oscillatorNodeB.frequency.setValueAtTime(
+		NOTES[prelude[0]],
+		audio.currentTime
+	);
+	oscillatorNodeB.type = 'sine';
+
+	const waveNode = audio.createWaveShaper();
+	waveNode.curve = createDistortion(100);
+
 	const gainNode = audio.createGain();
-	const oscillatorNode = audio.createOscillator();
 
-	gainNode.connect(audio.destination);
-	oscillatorNode.connect(gainNode);
-	oscillatorNode.frequency.value = NOTES[prelude[0]];
-	oscillatorNode.type = 'triangle';
+	const compressor = audio.createDynamicsCompressor();
+	compressor.threshold.setValueAtTime(-50, audio.currentTime);
+	compressor.knee.setValueAtTime(40, audio.currentTime);
+	compressor.ratio.setValueAtTime(12, audio.currentTime);
+	compressor.attack.setValueAtTime(0, audio.currentTime);
+	compressor.release.setValueAtTime(0.25, audio.currentTime);
 
-	oscillatorNode.start(audio.currentTime);
+	oscillatorNodeA.connect(gainNode);
+	oscillatorNodeB.connect(waveNode);
+	waveNode.connect(gainNode);
+	gainNode.connect(compressor);
+	compressor.connect(audio.destination);
+
+	oscillatorNodeA.start(audio.currentTime);
+	oscillatorNodeB.start(audio.currentTime);
 	gainNode.gain.setValueAtTime(0.0001, audio.currentTime);
 	gainNode.gain.exponentialRampToValueAtTime(1, audio.currentTime + attack);
 
 	for (const note of prelude.slice(0, 9)) {
-		oscillatorNode.frequency.exponentialRampToValueAtTime(
+		oscillatorNodeA.frequency.exponentialRampToValueAtTime(
+			NOTES[note],
+			audio.currentTime + attack
+		);
+		oscillatorNodeB.frequency.exponentialRampToValueAtTime(
 			NOTES[note],
 			audio.currentTime + attack
 		);
@@ -115,7 +154,8 @@ export async function playSong() {
 
 	gainNode.gain.setValueAtTime(1, audio.currentTime);
 	gainNode.gain.exponentialRampToValueAtTime(0.0001, audio.currentTime + decay);
-	oscillatorNode.stop(audio.currentTime + decay);
+	oscillatorNodeA.stop(audio.currentTime + decay);
+	oscillatorNodeB.stop(audio.currentTime + decay);
 }
 
 function sleep(ms) {
