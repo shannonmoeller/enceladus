@@ -12,6 +12,21 @@ const WATER_BOUYANCY = 0.05;
 const GAS_DRAG = 0.999;
 const GAS_GRAVITY = 0.04;
 
+function createMap(notes) {
+	const max = Math.max(...notes.filter(Boolean));
+	const xScale = 10;
+	const yScale = 0.2;
+	const map = new Path2D();
+
+	map.moveTo(0, 0);
+	map.lineTo(0, max * yScale);
+	notes.forEach((y, x) => y && map.lineTo(x * xScale, y * yScale));
+	map.lineTo(notes.length * xScale, 0);
+	map.closePath();
+
+	return map;
+}
+
 export function createGame(ctx) {
 	let left = false;
 	let right = false;
@@ -23,13 +38,7 @@ export function createGame(ctx) {
 		y0: 220,
 	};
 
-	const ice = new Path2D();
-	ice.moveTo(0, 0);
-	ice.lineTo(0, lune[0] * 0.1);
-	lune.forEach((y, x) => y && ice.lineTo(x * 20, y * 0.1));
-	ice.lineTo(lune.length * 20, 0);
-	ice.closePath();
-
+	const map = createMap(lune);
 	const loop = createTickLoop({
 		update() {
 			const { x, x0, y, y0 } = player;
@@ -85,8 +94,8 @@ export function createGame(ctx) {
 
 			ctx.fillStyle = 'hsl(162 100% 5%)';
 			ctx.strokeStyle = 'hsl(162 100% 20%)';
-			ctx.stroke(ice);
-			ctx.fill(ice);
+			ctx.stroke(map);
+			ctx.fill(map);
 
 			ctx.fillStyle = 'red';
 			ctx.beginPath();
