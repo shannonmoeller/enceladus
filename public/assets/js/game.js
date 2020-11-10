@@ -8,7 +8,7 @@ import { createTickLoop, createViewport, clearContext } from './vendor.js';
 
 const TAU = 2 * Math.PI;
 const WATER_DRAG = 0.98;
-const WATER_BOUYANCY = 0.05;
+const WATER_BOUYANCY = 0.06;
 const GAS_DRAG = 0.999;
 const GAS_GRAVITY = 0.04;
 
@@ -30,8 +30,11 @@ function createMap(notes) {
 export function createGame(ctx) {
 	let left = false;
 	let right = false;
+	let wasNearPocket = false;
+	let enteredPocket = performance.now();
 
 	const player = {
+		fuel: 100,
 		x: 220,
 		x0: 220,
 		y: 220,
@@ -40,29 +43,48 @@ export function createGame(ctx) {
 
 	const map = createMap(lune);
 	const loop = createTickLoop({
-		update() {
-			const { x, x0, y, y0 } = player;
-
+		update({ now }) {
+			let { fuel, x, x0, y, y0 } = player;
 			let vx = x - x0;
 			let vy = y - y0;
 
-			if (left) {
-				vx -= 0.075;
+			const isInPocket = x > 200 && x < 300 && y > 100 && y < 200;
+			const isNearPocket = x > 200 && x < 300 && y > 100 && y < 203;
+
+			if (isNearPocket) {
+				if (!wasNearPocket) {
+					enteredPocket = now;
+				}
+				wasNearPocket = true;
+			} else {
+				wasNearPocket = false;
 			}
 
-			if (right) {
-				vx += 0.075;
+			if (fuel > 0) {
+				if (left) {
+					vx -= 0.06;
+				}
+
+				if (right) {
+					vx += 0.06;
+				}
+
+				if (left && right) {
+					vy += 0.13;
+				} else if (left || right) {
+					vy += 0.1;
+				}
 			}
 
 			if (left && right) {
-				vy += 0.125;
+				fuel -= 0.75;
 			} else if (left || right) {
-				vy += 0.1;
+				fuel -= 0.5;
+			} else if (isNearPocket && now - enteredPocket > 600) {
+				fuel += 0.25;
 			}
 
-			const isInGas = x > 200 && x < 300 && y > 100 && y < 200;
-
-			if (isInGas) {
+			if (isInPocket) {
 				vx *= GAS_DRAG;
 				vy *= GAS_DRAG;
 				vy += GAS_GRAVITY;
@@ -72,6 +94,7 @@ export function createGame(ctx) {
 				vy -= WATER_BOUYANCY;
 			}
 
+			player.fuel = Math.max(0, Math.min(100, fuel));
 			player.x = Math.max(0, x + vx);
 			player.x0 = x;
 			player.y = Math.max(0, y + vy);
@@ -81,7 +104,7 @@ export function createGame(ctx) {
 		render() {
 			clearContext(ctx);
 
-			const scale = Math.max(ctx.height, ctx.width) / 600;
+			const scale = Math.max(ctx.height, ctx.width) / 800;
 			const height = ctx.height / scale;
 			const halfWidth = ctx.width / 2 / scale;
 
@@ -125,6 +148,7 @@ export function createGame(ctx) {
 				player.x,
 				10
 			);
+			ctx.fillText(`${Math.round(player.fuel)}%`, player.x - 30, 10);
 			ctx.restore();
 		},
 	});
