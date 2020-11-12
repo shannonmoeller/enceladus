@@ -208,7 +208,7 @@ export function createGame(canvas) {
 
 			const viewport = createViewport(ctx, {
 				...camera,
-				x: camera.x + 200,
+				x: camera.x + 120,
 			});
 
 			ctx.fillStyle = 'hsl(162 100% 50% / 50%)';
