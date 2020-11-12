@@ -31,8 +31,6 @@ for (const [key, hz] of Object.entries(NOTES)) {
 	}
 }
 
-console.log(NOTES);
-
 const AudioContext = window.AudioContext || window.webkitAudioContext;
 let audio = null;
 

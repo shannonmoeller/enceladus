@@ -2,28 +2,26 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
+import { clone, refs } from './vendor/dhtml.js';
+import { createContext } from './vendor/game.js';
 import { createGame } from './game.js';
-import { clone, refs, createContext, resizeContext } from './vendor.js';
-
-function prevent(event) {
-	event.preventDefault();
-}
 
 export function EnceladusGame(el) {
 	const view = clone('gameView');
 	const { scene, left, right } = refs(view);
-
-	const context = createContext(scene);
-	const game = createGame(context);
+	const game = createGame(scene);
 
 	el.start = () => {
-		resizeContext(context);
 		game.start();
 	};
 
 	el.pause = () => {
 		game.stop();
 	};
+
+	function prevent(event) {
+		event.preventDefault();
+	}
 
 	function handleLeftDown(event) {
 		event.preventDefault();
@@ -46,41 +44,29 @@ export function EnceladusGame(el) {
 	}
 
 	function handleKeyDown() {
-		if (!game.isPlaying) {
-			return;
-		}
-
-		switch (event.key) {
-			case 'ArrowLeft':
-			case 'a':
-				return handleLeftDown(event);
-			case 'ArrowRight':
-			case 'd':
-				return handleRightDown(event);
+		if (game.isPlaying) {
+			switch (event.key) {
+				case 'ArrowLeft':
+				case 'a':
+					return handleLeftDown(event);
+				case 'ArrowRight':
+				case 'd':
+					return handleRightDown(event);
+			}
 		}
 	}
 
 	function handleKeyUp(event) {
-		if (!game.isPlaying) {
-			return;
+		if (game.isPlaying) {
+			switch (event.key) {
+				case 'ArrowLeft':
+				case 'a':
+					return handleLeftUp(event);
+				case 'ArrowRight':
+				case 'd':
+					return handleRightUp(event);
+			}
 		}
-
-		switch (event.key) {
-			case 'ArrowLeft':
-			case 'a':
-				return handleLeftUp(event);
-			case 'ArrowRight':
-			case 'd':
-				return handleRightUp(event);
-		}
-	}
-
-	function handleResize(event) {
-		if (!game.isPlaying) {
-			return;
-		}
-
-		resizeContext(context);
 	}
 
 	left.addEventListener('click', prevent);
@@ -95,9 +81,8 @@ export function EnceladusGame(el) {
 	right.addEventListener('pointerup', handleRightUp);
 	right.addEventListener('pointerout', handleRightUp);
 
-	document.body.addEventListener('keydown', handleKeyDown);
-	document.body.addEventListener('keyup', handleKeyUp);
-	window.addEventListener('resize', handleResize, { passive: true });
+	document.addEventListener('keydown', handleKeyDown);
+	document.addEventListener('keyup', handleKeyUp);
 
 	el.prepend(view);
 }

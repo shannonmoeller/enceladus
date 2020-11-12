@@ -2,22 +2,20 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import { playSong } from './music.js';
-import { refs } from './vendor.js';
+import { refs } from './vendor/dhtml.js';
 
 export function EnceladusApp(el) {
 	const { lobby, start, game, pause } = refs(el);
 
-	start.onclick = () => {
+	start.addEventListener('click', () => {
 		lobby.classList.add('closed');
 		game.classList.remove('closed');
 		game.start();
-		// playSong();
-	};
+	});
 
-	pause.onclick = () => {
+	pause.addEventListener('click', () => {
 		lobby.classList.remove('closed');
 		game.classList.add('closed');
 		game.pause();
-	};
+	});
 }
