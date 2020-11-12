@@ -19,8 +19,8 @@ const GAS_GRAVITY = 0.04;
 const WATER_BOUYANCY = 0.06;
 const WATER_DRAG = 0.98;
 const RELAX = 3;
-const X_SCALE = 5;
-const Y_SCALE = 0.2;
+const X_SCALE = 10;
+const Y_SCALE = 0.5;
 
 export function findNearestIce(x) {
 	const { length } = notes;
@@ -105,10 +105,10 @@ export function createGame(canvas) {
 		enteredGas: performance.now(),
 		wasNearGas: false,
 		fuel: 100,
-		x: 500,
-		x0: 500,
-		y: 70,
-		y0: 70,
+		x: 800,
+		x0: 800,
+		y: 150,
+		y0: 150,
 		mass: 0,
 	};
 
@@ -141,7 +141,7 @@ export function createGame(canvas) {
 			const nearestIce = findNearestIce(x);
 
 			const isInGas = y < nearestGas;
-			const isNearGas = y < nearestGas + 3;
+			const isNearGas = y < nearestGas + 10;
 
 			if (isNearGas) {
 				if (!player.wasNearGas) {
@@ -197,7 +197,8 @@ export function createGame(canvas) {
 					length: 25,
 					strength: 0.025,
 				});
-				constrainStick(link, camera, {
+				constrainChain(link, camera, {
+					length: 5,
 					strength: 0.025,
 				});
 			}
@@ -249,7 +250,7 @@ export function createGame(canvas) {
 	function resize() {
 		resizeContext(ctx);
 
-		camera.z = Math.min(ctx.width / 500, ctx.height / 500);
+		camera.z = Math.min(ctx.width / 400, ctx.height / 300);
 	}
 
 	return {

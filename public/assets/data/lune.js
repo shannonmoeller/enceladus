@@ -221,4 +221,5 @@ export const notes = [
 // prettier-ignore
 export const sustains = [];
 sustains[0] = 336;
-sustains[147] = 0;
+sustains[146] = 290;
+sustains[360] = 0;
