@@ -20,7 +20,7 @@ const WATER_BOUYANCY = 0.06;
 const WATER_DRAG = 0.98;
 const RELAX = 3;
 const X_SCALE = 10;
-const Y_SCALE = 0.5;
+const Y_SCALE = 0.75;
 
 export function findNearestIce(x) {
 	const { length } = notes;
@@ -173,7 +173,8 @@ export function createGame(canvas) {
 			} else if (left || right) {
 				fuel -= 0.5;
 			} else if (isNearGas && now - player.enteredGas > 600) {
-				fuel += 0.25;
+				fuel += 0.001;
+				fuel *= 1.02;
 			}
 
 			if (isInGas) {
@@ -250,8 +251,11 @@ export function createGame(canvas) {
 	function resize() {
 		resizeContext(ctx);
 
-		camera.z = Math.min(ctx.width / 400, ctx.height / 300);
+		camera.z = Math.min(ctx.width / 420, ctx.height / 360);
 	}
+
+	addEventListener('resize', resize, { passive: true });
+	window.player = player;
 
 	return {
 		get isPlaying() {
@@ -267,13 +271,11 @@ export function createGame(canvas) {
 		},
 
 		start() {
-			addEventListener('resize', resize, { passive: true });
 			resize();
 			loop.start();
 		},
 
 		stop() {
-			removeEventListener('resize', resize, { passive: true });
 			loop.stop();
 		},
 	};
