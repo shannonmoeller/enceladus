@@ -13,14 +13,15 @@ import {
 } from './vendor/game.js';
 import { notes, sustains } from '../data/lune.js';
 
-const TAU = 2 * Math.PI;
+const PI = Math.PI;
+const TAU = Math.PI * 2;
 const GAS_DRAG = 0.999;
 const GAS_GRAVITY = 0.04;
 const WATER_BOUYANCY = 0.06;
 const WATER_DRAG = 0.98;
 const RELAX = 3;
-const X_SCALE = 10;
-const Y_SCALE = 0.75;
+const X_SCALE = 16;
+const Y_SCALE = 0.66;
 
 export function findNearestIce(x) {
 	const { length } = notes;
@@ -89,7 +90,7 @@ export function createMap() {
 		gas.lineTo(x * X_SCALE, last);
 	});
 
-	gas.lineTo(sustains.length, 0);
+	gas.lineTo(sustains.length * X_SCALE, 0);
 	gas.closePath();
 
 	return {
@@ -121,13 +122,17 @@ export function createGame(canvas) {
 	const camera = {
 		x: player.x,
 		y: player.y,
+		z: 1,
 		mass: 1,
+		scale: 1,
 	};
 
 	const controller = {
 		left: false,
 		right: false,
 	};
+
+	const scale = 1;
 
 	const { map, gas } = createMap();
 	const loop = createTickLoop({
@@ -172,8 +177,10 @@ export function createGame(canvas) {
 				fuel -= 0.75;
 			} else if (left || right) {
 				fuel -= 0.5;
-			} else if (isNearGas && now - player.enteredGas > 600) {
-				fuel += 0.001;
+			} else if (isNearGas && now - player.enteredGas > 100) {
+				if (!fuel) {
+					fuel += 0.5;
+				}
 				fuel *= 1.02;
 			}
 
@@ -195,12 +202,12 @@ export function createGame(canvas) {
 
 			for (let i = RELAX; i--; ) {
 				constrainChain(player, link, {
-					length: 25,
+					length: 12,
 					strength: 0.025,
 				});
 				constrainChain(link, camera, {
-					length: 5,
-					strength: 0.025,
+					length: 6,
+					strength: 0.05,
 				});
 			}
 		},
@@ -211,27 +218,46 @@ export function createGame(canvas) {
 			const viewport = createViewport(ctx, {
 				...camera,
 				x: camera.x + 120,
+				y: camera.y - 40,
 			});
 
 			ctx.fillStyle = 'hsl(162 100% 50% / 50%)';
 			ctx.fill(gas);
 
-			ctx.fillStyle = 'hsl(162 100% 5% / 50%)';
 			ctx.strokeStyle = 'hsl(162 100% 20%)';
 			ctx.stroke(map);
+			ctx.fillStyle = 'hsl(162 100% 5% / 50%)';
 			ctx.fill(map);
 
-			ctx.fillStyle = 'red';
 			ctx.beginPath();
 			ctx.arc(player.x0, player.y0, 5.5, 0, TAU);
 			ctx.closePath();
+			ctx.fillStyle = 'red';
 			ctx.fill();
 
-			ctx.fillStyle = 'white';
 			ctx.beginPath();
 			ctx.arc(player.x, player.y, 5, 0, TAU);
 			ctx.closePath();
+			ctx.fillStyle = 'white';
 			ctx.fill();
+
+			ctx.beginPath();
+			ctx.arc(player.x, player.y, 10, TAU * 0.333, TAU * 0.666);
+			ctx.strokeStyle = 'hsl(0 0% 100% / 50%)';
+			ctx.lineWidth = 3;
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.arc(
+				player.x,
+				player.y,
+				10,
+				TAU * 0.333,
+				TAU * 0.333 + TAU * 0.333 * (player.fuel / 100)
+			);
+			ctx.strokeStyle = 'hsl(0 0% 100%)';
+			ctx.lineWidth = 3;
+			ctx.stroke();
 
 			ctx.fillStyle = 'white';
 			ctx.fillText(
@@ -240,9 +266,14 @@ export function createGame(canvas) {
 				viewport.top + 10
 			);
 			ctx.fillText(
-				`${Math.round(player.fuel)}%`,
+				`${Math.round(player.x / X_SCALE)},${Math.round(player.y / Y_SCALE)}`,
 				viewport.left,
 				viewport.top + 20
+			);
+			ctx.fillText(
+				`${Math.round(player.fuel)}%`,
+				viewport.left,
+				viewport.top + 30
 			);
 			ctx.restore();
 		},
@@ -251,13 +282,17 @@ export function createGame(canvas) {
 	function resize() {
 		resizeContext(ctx);
 
-		camera.z = Math.min(ctx.width / 420, ctx.height / 360);
+		camera.z = Math.min(ctx.width / 620, ctx.height / 380) * camera.scale;
 	}
 
 	addEventListener('resize', resize, { passive: true });
-	window.player = player;
 
-	return {
+	const game = {
+		controller,
+		player,
+		link,
+		camera,
+
 		get isPlaying() {
 			return loop.isPlaying;
 		},
@@ -278,5 +313,19 @@ export function createGame(canvas) {
 		stop() {
 			loop.stop();
 		},
+
+		zoomIn() {
+			camera.scale *= 1.1;
+			resize();
+		},
+
+		zoomOut() {
+			camera.scale /= 1.1;
+			resize();
+		},
 	};
+
+	window.game = game;
+
+	return game;
 }

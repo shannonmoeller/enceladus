@@ -52,6 +52,12 @@ export function EnceladusGame(el) {
 				case 'ArrowRight':
 				case 'd':
 					return handleRightDown(event);
+				case '-':
+				case '_':
+					return game.zoomOut();
+				case '=':
+				case '+':
+					return game.zoomIn();
 			}
 		}
 	}
