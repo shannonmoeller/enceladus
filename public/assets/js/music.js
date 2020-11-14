@@ -108,3 +108,19 @@ export async function playSong() {
 function sleep(ms) {
 	return new Promise((r) => setTimeout(r, ms));
 }
+
+/* * /
+a.tracks[1].notes.reduce((acc, item) => {
+  acc[item.time * 4] = Math.min(acc[item.time * 4] || Infinity, NOTES[item.name]);
+  return acc;
+}, []).concat(a.tracks[1].notes.reduce((acc, item) => {
+  acc[item.time * 4] = Math.max(acc[item.time * 4] || 0, NOTES[item.name]);
+  return acc;
+}, [])).concat(a.tracks[0].notes.reduce((acc, item) => {
+  acc[item.time * 4] = Math.min(acc[item.time * 4] || Infinity, NOTES[item.name]);
+  return acc;
+}, [])).concat(a.tracks[0].notes.reduce((acc, item) => {
+  acc[item.time * 4] = Math.max(acc[item.time * 4] || 0, NOTES[item.name]);
+  return acc;
+}, []))
+/* */

@@ -1,3 +1,7 @@
+/**
+ * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
 // prettier-ignore
 export const notes = [
 	349.28,,,,,,,,,,,,,,,,369.92,,,,,,,,,,,,,,,,,,349.28,,,,,,,,,,,,,,,,,,311.2,,
@@ -218,12 +222,13 @@ export const notes = [
 	1108.48,,,,,,1318.4,,,,,,1661.44,,,,,,,,,,,,,,,,,,1661.44,
 ];
 
-// prettier-ignore
 export const sustains = [];
 sustains[0] = 336;
 sustains[146] = 290;
 sustains[253] = 320;
-sustains[360] = 0;
+sustains[294] = 0;
+sustains[306] = 292;
+sustains[368] = 0;
 sustains[2500] = 320;
 sustains[2514] = 360;
 sustains[2524] = 220;

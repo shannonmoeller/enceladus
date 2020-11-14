@@ -8,10 +8,12 @@ import {
 	clearContext,
 	resizeContext,
 	createTickLoop,
+	getDistance,
+	findClosest,
 	constrainChain,
 	constrainStick,
 } from './vendor/game.js';
-import { notes, sustains } from '../data/lune.js';
+import * as lune from '../data/lune.js';
 
 const PI = Math.PI;
 const TAU = Math.PI * 2;
@@ -20,87 +22,111 @@ const GAS_GRAVITY = 0.04;
 const WATER_BOUYANCY = 0.06;
 const WATER_DRAG = 0.98;
 const RELAX = 3;
-const X_SCALE = 16;
-const Y_SCALE = 0.66;
+const MAP_SCALE_X = 16;
+const MAP_SCALE_Y = 0.66;
 
-export function findNearestIce(x) {
-	const { length } = notes;
-	const i = Math.floor(x / X_SCALE);
-	const series = [];
+function indexSparseArray(list) {
+	const { length } = list;
+	const filtered = [];
+	const indexed = [];
 
-	for (let l = i, lc = 2; l >= 0; l--) {
-		if (notes[l] != null) {
-			series.unshift({
-				x: l * X_SCALE,
-				y: notes[l] * Y_SCALE,
-			});
+	let prev = 0;
+	for (let i = 0; i < list.length; i++) {
+		const item = list[i];
 
-			if (--lc <= 0) {
-				break;
-			}
+		if (item != null) {
+			filtered.push(item);
+			indexed.push(++prev);
+		} else {
+			indexed.push(prev);
 		}
 	}
-
-	for (let r = i + 1, rc = 2; r < length; r++) {
-		if (notes[r] != null) {
-			series.push({
-				x: r * X_SCALE,
-				y: notes[r] * Y_SCALE,
-			});
-
-			if (--rc <= 0) {
-				break;
-			}
-		}
-	}
-
-	return series;
-}
-
-export function findNearestGas(x) {
-	const i = Math.floor(x / X_SCALE);
-
-	for (let l = i; l >= 0; l--) {
-		if (sustains[l] != null) {
-			return sustains[l] * Y_SCALE;
-		}
-	}
-
-	return 0;
-}
-
-export function createMap() {
-	const map = new Path2D();
-
-	map.moveTo(0, 0);
-	map.lineTo(0, notes[0] * Y_SCALE);
-	notes.forEach((y, x) => y && map.lineTo(x * X_SCALE, y * Y_SCALE));
-	map.lineTo(notes.length * X_SCALE, 0);
-	map.closePath();
-
-	const gas = new Path2D();
-
-	gas.moveTo(0, 0);
-	gas.lineTo(0, sustains[0] * Y_SCALE);
-
-	let last = 0;
-	sustains.forEach((y, x) => {
-		gas.lineTo(x * X_SCALE, last);
-		last = y * Y_SCALE;
-		gas.lineTo(x * X_SCALE, last);
-	});
-
-	gas.lineTo(sustains.length * X_SCALE, 0);
-	gas.closePath();
 
 	return {
-		map,
+		indexed,
+		filtered,
+
+		findCurrent(i) {
+			const indexedKey = Math.max(0, Math.min(i, length - 1));
+			const filteredKey = indexed[indexedKey];
+
+			return filtered[filteredKey - 1];
+		},
+
+		findNearest(i, distance = 1) {
+			const indexedKey = Math.max(0, Math.min(i, length - 1));
+			const filteredKey = indexed[indexedKey];
+
+			return filtered.slice(
+				Math.max(0, filteredKey - distance),
+				filteredKey + distance
+			);
+		},
+	};
+}
+
+export function createMap({ notes, sustains }) {
+	const ice = notes.map((note, i) => ({
+		x: i * MAP_SCALE_X,
+		y: note * MAP_SCALE_Y,
+	}));
+
+	const gas = sustains.map((sustain, i) => ({
+		x: i * MAP_SCALE_X,
+		y: sustain * MAP_SCALE_Y,
+	}));
+
+	const iceIndex = indexSparseArray(ice);
+	const icePath = new Path2D();
+
+	icePath.moveTo(0, 0);
+	icePath.lineTo(0, ice[0].y);
+	ice.forEach((point) => icePath.lineTo(point.x, point.y));
+	icePath.lineTo(ice[ice.length - 1].x, 0);
+	icePath.closePath();
+
+	const gasIndex = indexSparseArray(gas);
+	const gasPath = new Path2D();
+
+	gasPath.moveTo(0, 0);
+	gasPath.lineTo(0, gas[0].y);
+
+	let prev = { x: 0, y: 0 };
+	gas.forEach((point) => {
+		gasPath.lineTo(point.x, prev.y);
+		prev = point;
+		gasPath.lineTo(point.x, prev.y);
+	});
+
+	icePath.lineTo(gas[gas.length - 1].x, 0);
+	gasPath.closePath();
+
+	return {
+		ice,
+		iceIndex,
+		icePath,
+
+		getIceWalls(x) {
+			const mapX = Math.floor(x / MAP_SCALE_X);
+
+			return iceIndex.findNearest(mapX, 2);
+		},
+
 		gas,
+		gasIndex,
+		gasPath,
+
+		getGasLevel(x) {
+			const mapX = Math.floor(x / MAP_SCALE_X);
+
+			return gasIndex.findCurrent(mapX).y;
+		},
 	};
 }
 
 export function createGame(canvas) {
 	const ctx = createContext(canvas);
+	const map = createMap(lune);
 
 	const player = {
 		enteredGas: performance.now(),
@@ -132,9 +158,6 @@ export function createGame(canvas) {
 		right: false,
 	};
 
-	const scale = 1;
-
-	const { map, gas } = createMap();
 	const loop = createTickLoop({
 		update({ now }) {
 			const { left, right } = controller;
@@ -142,11 +165,11 @@ export function createGame(canvas) {
 			let vx = x - x0;
 			let vy = y - y0;
 
-			const nearestGas = findNearestGas(x);
-			const nearestIce = findNearestIce(x);
+			const iceWalls = map.getIceWalls(x);
+			const gasLevel = map.getGasLevel(x);
 
-			const isInGas = y < nearestGas;
-			const isNearGas = y < nearestGas + 10;
+			const isInGas = y < gasLevel;
+			const isNearGas = y < gasLevel + 10;
 
 			if (isNearGas) {
 				if (!player.wasNearGas) {
@@ -222,12 +245,12 @@ export function createGame(canvas) {
 			});
 
 			ctx.fillStyle = 'hsl(162 100% 50% / 50%)';
-			ctx.fill(gas);
+			ctx.fill(map.gasPath);
 
 			ctx.strokeStyle = 'hsl(162 100% 20%)';
-			ctx.stroke(map);
+			ctx.stroke(map.icePath);
 			ctx.fillStyle = 'hsl(162 100% 5% / 50%)';
-			ctx.fill(map);
+			ctx.fill(map.icePath);
 
 			ctx.beginPath();
 			ctx.arc(player.x0, player.y0, 5.5, 0, TAU);
@@ -259,22 +282,16 @@ export function createGame(canvas) {
 			ctx.lineWidth = 3;
 			ctx.stroke();
 
+			const playerX = Math.round(player.x);
+			const playerY = Math.round(player.y);
+			const playerFuel = Math.round(player.fuel);
+			const mapX = Math.round(player.x / MAP_SCALE_X);
+			const mapY = Math.round(player.y / MAP_SCALE_Y);
+
 			ctx.fillStyle = 'white';
-			ctx.fillText(
-				`${Math.round(player.x)},${Math.round(player.y)}`,
-				viewport.left,
-				viewport.top + 10
-			);
-			ctx.fillText(
-				`${Math.round(player.x / X_SCALE)},${Math.round(player.y / Y_SCALE)}`,
-				viewport.left,
-				viewport.top + 20
-			);
-			ctx.fillText(
-				`${Math.round(player.fuel)}%`,
-				viewport.left,
-				viewport.top + 30
-			);
+			ctx.fillText(`p ${playerX},${playerY}`, viewport.left, viewport.top + 10);
+			ctx.fillText(`m ${mapX},${mapY}`, viewport.left, viewport.top + 20);
+			ctx.fillText(`${playerFuel}%`, viewport.left, viewport.top + 30);
 			ctx.restore();
 		},
 	});
@@ -282,16 +299,19 @@ export function createGame(canvas) {
 	function resize() {
 		resizeContext(ctx);
 
-		camera.z = Math.min(ctx.width / 620, ctx.height / 380) * camera.scale;
+		camera.z = Math.min(ctx.width / 400, ctx.height / 400) * camera.scale;
 	}
 
 	addEventListener('resize', resize, { passive: true });
 
 	const game = {
-		controller,
+		ctx,
+		map,
 		player,
 		link,
 		camera,
+		controller,
+		loop,
 
 		get isPlaying() {
 			return loop.isPlaying;
