@@ -27,23 +27,6 @@ const RELAX = 3;
 const MAP_SCALE_X = 16;
 const MAP_SCALE_Y = 0.66;
 
-function isDead(player, walls) {
-	const length = walls.length - 1;
-
-	for (let i = 0; i < length; i++) {
-		const a = walls[i];
-		const b = walls[i + 1];
-		const closest = findClosest(a, b, player);
-		const distance = getDistance(player, closest);
-
-		if (distance < 5) {
-			return true;
-		}
-	}
-
-	return false;
-}
-
 export function createGame(canvas) {
 	const ctx = createContext(canvas);
 	const map = createMap(lune);
@@ -82,6 +65,22 @@ export function createGame(canvas) {
 		y: player.y,
 	};
 
+	function getDistanceFromNearestWall() {
+		const walls = map.getIceWalls(player.x);
+		const length = walls.length - 1;
+		let distance = Infinity;
+
+		for (let i = 0; i < length; i++) {
+			const a = walls[i];
+			const b = walls[i + 1];
+			const closest = findClosest(a, b, player);
+
+			distance = Math.min(distance, getDistance(player, closest));
+		}
+
+		return distance;
+	}
+
 	function updateCamera() {
 		for (let i = RELAX; i--; ) {
 			constrainChain(player, link, {
@@ -102,9 +101,11 @@ export function createGame(canvas) {
 			let vx = x - x0;
 			let vy = y - y0;
 
-			const iceWalls = map.getIceWalls(x);
+			const distanceFromWall = getDistanceFromNearestWall();
+			const isDead = distanceFromWall < 5;
+			const isNearlyDead = distanceFromWall < 10;
 
-			if (isDead(player, iceWalls)) {
+			if (isDead) {
 				console.log('x_x');
 
 				respawn.died = true;
@@ -129,6 +130,11 @@ export function createGame(canvas) {
 			const isNearWater = y > gasLevel - 10;
 			const isBobbing = isNearGas && isNearWater;
 			const isSlowlyBobbing = isBobbing && vy < 0.6;
+
+			if (!isNearlyDead && isSlowlyBobbing && fuel > 80) {
+				respawn.x = x;
+				respawn.y = gasLevel;
+			}
 
 			if (fuel > 0) {
 				if (left) {
@@ -174,11 +180,6 @@ export function createGame(canvas) {
 				vy *= WATER_DRAG;
 			}
 
-			if (isSlowlyBobbing && fuel > 80) {
-				respawn.x = x;
-				respawn.y = gasLevel;
-			}
-
 			player.fuel = Math.max(0, Math.min(100, fuel));
 			player.x += vx;
 			player.x0 = x;
@@ -191,7 +192,9 @@ export function createGame(canvas) {
 		render() {
 			clearContext(ctx);
 
-			const iceWalls = map.getIceWalls(player.x);
+			const distanceFromWall = getDistanceFromNearestWall();
+			const isDead = distanceFromWall < 5;
+
 			const viewport = createViewport(ctx, {
 				...camera,
 				x: camera.x + 120,
@@ -215,7 +218,7 @@ export function createGame(canvas) {
 			ctx.beginPath();
 			ctx.arc(player.x, player.y, 5, 0, TAU);
 			ctx.closePath();
-			ctx.fillStyle = isDead(player, iceWalls) ? 'red' : 'white';
+			ctx.fillStyle = isDead ? 'red' : 'white';
 			ctx.fill();
 
 			ctx.beginPath();
