@@ -3,8 +3,6 @@
  */
 
 import { defineElement } from './vendor/dhtml.js';
-import { EnceladusApp } from './enceladus-app.js';
-import { EnceladusGame } from './enceladus-game.js';
+import { EnceladusApp } from './app.js';
 
 defineElement('enceladus-app', EnceladusApp);
-defineElement('enceladus-game', EnceladusGame);

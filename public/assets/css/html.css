@@ -45,14 +45,15 @@ html {
 }
 
 body {
+	background-attachment: fixed;
 	background-color: hsl(0 0% 0%);
 	background-image: linear-gradient(
 		to bottom,
 		hsl(var(--primary-h) 40% 0%),
 		hsl(var(--primary-h) 0% 1%) 20%,
 		hsl(var(--primary-h) 20% 8%) 87%,
-		hsl(var(--primary-h) 30% 12%) 98%,
-		hsl(var(--primary-h) 40% 14%)
+		hsl(var(--primary-h) 30% 16%) 98%,
+		hsl(var(--primary-h) 40% 24%)
 	);
 	color: hsl(var(--primary-hs) 80%);
 	font: 200 2.4rem/1 var(--font-stack);

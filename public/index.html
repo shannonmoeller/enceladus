@@ -36,21 +36,18 @@
 	<body class="loading">
 
 		<enceladus-app>
-			<main class="lobby" ref="lobby">
+			<article class="lobby" ref="lobbyEl">
 				<h1 class="lobby-title">Enceladus</h1>
-				<button class="button" ref="start">start</button>
-			</main>
+				<button class="button" ref="startEl">start</button>
+			</article>
 
-			<enceladus-game class="game closed" ref="game">
-				<button class="button game-pause" ref="pause">pause</a>
-			</enceladus-game>
+			<article class="game closed" ref="gameEl">
+				<canvas class="game-canvas" ref="canvasEl"></canvas>
+				<button class="game-left" ref="leftEl">left</button>
+				<button class="game-right" ref="rightEl">right</button>
+				<button class="game-pause button" ref="pauseEl">pause</a>
+			</article>
 		</enceladus-app>
-
-		<template id="gameView">
-			<canvas class="game-canvas" ref="canvas"></canvas>
-			<button class="game-left" ref="left">left</button>
-			<button class="game-right" ref="right">right</button>
-		</template>
 
 	</body>
 </html>

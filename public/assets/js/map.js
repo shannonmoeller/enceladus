@@ -68,17 +68,17 @@ export function createMap({ notes, sustains }) {
 	const iceIndex = indexSparseArray(ice);
 	const icePath = new Path2D();
 
-	icePath.moveTo(0, 0);
+	icePath.moveTo(0, -1000);
 	icePath.lineTo(0, ice[0].y);
 	ice.forEach((point) => icePath.lineTo(point.x, point.y));
-	icePath.lineTo(ice[ice.length - 1].x, 0);
+	icePath.lineTo(ice[ice.length - 1].x, -1000);
 	icePath.closePath();
 
 	const gas = sustains.map((y, x) => toWorldCoords({ x, y }));
 	const gasIndex = indexSparseArray(gas);
 	const gasPath = new Path2D();
 
-	gasPath.moveTo(0, 0);
+	gasPath.moveTo(0, -1000);
 	gasPath.lineTo(0, gas[0].y);
 
 	let prev = { x: 0, y: 0 };
@@ -88,7 +88,7 @@ export function createMap({ notes, sustains }) {
 		gasPath.lineTo(point.x, prev.y);
 	});
 
-	gasPath.lineTo(gas[gas.length - 1].x, 0);
+	gasPath.lineTo(gas[gas.length - 1].x, -1000);
 	gasPath.closePath();
 
 	return {

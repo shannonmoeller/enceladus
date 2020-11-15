@@ -223,12 +223,21 @@ export const notes = [
 ];
 
 export const sustains = [];
-sustains[0] = 336;
+sustains[0] = 300;
 sustains[146] = 290;
 sustains[253] = 320;
 sustains[294] = 0;
 sustains[306] = 292;
-sustains[368] = 0;
+sustains[436] = 310;
+sustains[510] = 270;
+sustains[525] = 220;
+sustains[541] = 210;
+sustains[547] = 204;
+sustains[554] = 212;
+sustains[559] = 200;
+sustains[565] = 204;
+sustains[572] = 240;
+sustains[580] = 360;
 sustains[2500] = 320;
 sustains[2514] = 360;
 sustains[2524] = 220;

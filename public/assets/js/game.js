@@ -127,7 +127,7 @@ export function createGame(canvas) {
 			const gasLevel = map.getGasLevel(x);
 			const isInGas = y < gasLevel;
 			const isNearGas = y < gasLevel + 10;
-			const isNearWater = y > gasLevel - 10;
+			const isNearWater = y > gasLevel - 15;
 			const isBobbing = isNearGas && isNearWater;
 			const isSlowlyBobbing = isBobbing && vy < 0.6;
 
@@ -192,6 +192,7 @@ export function createGame(canvas) {
 		render() {
 			clearContext(ctx);
 
+			const isDebug = location.hash === '#debug';
 			const distanceFromWall = getDistanceFromNearestWall();
 			const isDead = distanceFromWall < 5;
 
@@ -201,24 +202,16 @@ export function createGame(canvas) {
 				y: camera.y - 40,
 			});
 
-			ctx.fillStyle = 'hsl(162 100% 50% / 50%)';
+			ctx.fillStyle = 'hsl(162 100% 50% / 20%)';
 			ctx.fill(map.gasPath);
 
-			ctx.strokeStyle = 'hsl(162 100% 20%)';
-			ctx.stroke(map.icePath);
-			ctx.fillStyle = 'hsl(162 100% 5% / 50%)';
+			ctx.fillStyle = isDebug ? 'hsl(0 0% 0% / 50%)' : 'hsl(0 0% 0%)';
 			ctx.fill(map.icePath);
-
-			ctx.beginPath();
-			ctx.arc(player.x0, player.y0, 5.5, 0, TAU);
-			ctx.closePath();
-			ctx.fillStyle = 'red';
-			ctx.fill();
 
 			ctx.beginPath();
 			ctx.arc(player.x, player.y, 5, 0, TAU);
 			ctx.closePath();
-			ctx.fillStyle = isDead ? 'red' : 'white';
+			ctx.fillStyle = 'white';
 			ctx.fill();
 
 			ctx.beginPath();
@@ -239,27 +232,35 @@ export function createGame(canvas) {
 			ctx.lineWidth = 3;
 			ctx.stroke();
 
-			const playerX = Math.round(player.x);
-			const playerY = Math.round(player.y);
-			const playerFuel = Math.round(player.fuel);
-			const mapX = Math.round(player.x / MAP_SCALE_X);
-			const mapY = Math.round(player.y / MAP_SCALE_Y);
+			if (isDebug) {
+				const playerX = Math.round(player.x);
+				const playerY = Math.round(player.y);
+				const playerFuel = Math.round(player.fuel);
+				const mapX = Math.round(player.x / MAP_SCALE_X);
+				const mapY = Math.round(player.y / MAP_SCALE_Y);
 
-			ctx.fillStyle = 'white';
-			ctx.fillText(`p ${playerX},${playerY}`, viewport.left, viewport.top + 10);
-			ctx.fillText(`m ${mapX},${mapY}`, viewport.left, viewport.top + 20);
-			ctx.fillText(`${playerFuel}%`, viewport.left, viewport.top + 30);
-			ctx.restore();
+				ctx.fillStyle = 'hsl(0 0% 100% / 50%)';
+				ctx.fillText(
+					`p ${playerX},${playerY}`,
+					viewport.left + 20,
+					viewport.top + 30
+				);
+				ctx.fillText(
+					`m ${mapX},${mapY}`,
+					viewport.left + 20,
+					viewport.top + 40
+				);
+				ctx.fillText(`${playerFuel}%`, viewport.left + 20, viewport.top + 50);
+			}
+
+			viewport.restore();
 		},
 	});
 
 	function resize() {
 		resizeContext(ctx);
-
 		camera.z = Math.min(ctx.width / 400, ctx.height / 400) * camera.scale;
 	}
-
-	addEventListener('resize', resize, { passive: true });
 
 	const game = {
 		ctx,
@@ -291,6 +292,10 @@ export function createGame(canvas) {
 			loop.stop();
 		},
 
+		resize() {
+			resize();
+		},
+
 		zoomIn() {
 			camera.scale *= 1.1;
 			resize();
@@ -301,8 +306,6 @@ export function createGame(canvas) {
 			resize();
 		},
 	};
-
-	window.game = game;
 
 	return game;
 }
