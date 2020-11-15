@@ -14,6 +14,7 @@ import {
 	constrainStick,
 } from './vendor/game.js';
 import * as lune from '../data/lune.js';
+import { createMap } from './map.js';
 
 const PI = Math.PI;
 const TAU = Math.PI * 2;
@@ -25,103 +26,21 @@ const RELAX = 3;
 const MAP_SCALE_X = 16;
 const MAP_SCALE_Y = 0.66;
 
-function indexSparseArray(list) {
-	const { length } = list;
-	const filtered = [];
-	const indexed = [];
+function isDead(player, walls) {
+	const length = walls.length - 1;
 
-	let prev = 0;
-	for (let i = 0; i < list.length; i++) {
-		const item = list[i];
+	for (let i = 0; i < length; i++) {
+		const a = walls[i];
+		const b = walls[i + 1];
+		const closest = findClosest(a, b, player);
+		const distance = getDistance(player, closest);
 
-		if (item != null) {
-			filtered.push(item);
-			indexed.push(++prev);
-		} else {
-			indexed.push(prev);
+		if (distance < 5) {
+			return true;
 		}
 	}
 
-	return {
-		indexed,
-		filtered,
-
-		findCurrent(i) {
-			const indexedKey = Math.max(0, Math.min(i, length - 1));
-			const filteredKey = indexed[indexedKey];
-
-			return filtered[filteredKey - 1];
-		},
-
-		findNearest(i, distance = 1) {
-			const indexedKey = Math.max(0, Math.min(i, length - 1));
-			const filteredKey = indexed[indexedKey];
-
-			return filtered.slice(
-				Math.max(0, filteredKey - distance),
-				filteredKey + distance
-			);
-		},
-	};
-}
-
-export function createMap({ notes, sustains }) {
-	const ice = notes.map((note, i) => ({
-		x: i * MAP_SCALE_X,
-		y: note * MAP_SCALE_Y,
-	}));
-
-	const gas = sustains.map((sustain, i) => ({
-		x: i * MAP_SCALE_X,
-		y: sustain * MAP_SCALE_Y,
-	}));
-
-	const iceIndex = indexSparseArray(ice);
-	const icePath = new Path2D();
-
-	icePath.moveTo(0, 0);
-	icePath.lineTo(0, ice[0].y);
-	ice.forEach((point) => icePath.lineTo(point.x, point.y));
-	icePath.lineTo(ice[ice.length - 1].x, 0);
-	icePath.closePath();
-
-	const gasIndex = indexSparseArray(gas);
-	const gasPath = new Path2D();
-
-	gasPath.moveTo(0, 0);
-	gasPath.lineTo(0, gas[0].y);
-
-	let prev = { x: 0, y: 0 };
-	gas.forEach((point) => {
-		gasPath.lineTo(point.x, prev.y);
-		prev = point;
-		gasPath.lineTo(point.x, prev.y);
-	});
-
-	icePath.lineTo(gas[gas.length - 1].x, 0);
-	gasPath.closePath();
-
-	return {
-		ice,
-		iceIndex,
-		icePath,
-
-		getIceWalls(x) {
-			const mapX = Math.floor(x / MAP_SCALE_X);
-
-			return iceIndex.findNearest(mapX, 2);
-		},
-
-		gas,
-		gasIndex,
-		gasPath,
-
-		getGasLevel(x) {
-			const mapX = Math.floor(x / MAP_SCALE_X);
-
-			return gasIndex.findCurrent(mapX).y;
-		},
-	};
+	return false;
 }
 
 export function createGame(canvas) {
@@ -132,10 +51,10 @@ export function createGame(canvas) {
 		enteredGas: performance.now(),
 		wasNearGas: false,
 		fuel: 100,
-		x: 800,
-		x0: 800,
-		y: 150,
-		y0: 150,
+		x: 1440,
+		x0: 1440,
+		y: 220,
+		y0: 220,
 		mass: 0,
 	};
 
@@ -166,6 +85,11 @@ export function createGame(canvas) {
 			let vy = y - y0;
 
 			const iceWalls = map.getIceWalls(x);
+
+			if (isDead(player, iceWalls)) {
+				console.log('x_x');
+			}
+
 			const gasLevel = map.getGasLevel(x);
 
 			const isInGas = y < gasLevel;
@@ -238,6 +162,7 @@ export function createGame(canvas) {
 		render() {
 			clearContext(ctx);
 
+			const iceWalls = map.getIceWalls(player.x);
 			const viewport = createViewport(ctx, {
 				...camera,
 				x: camera.x + 120,
@@ -261,7 +186,7 @@ export function createGame(canvas) {
 			ctx.beginPath();
 			ctx.arc(player.x, player.y, 5, 0, TAU);
 			ctx.closePath();
-			ctx.fillStyle = 'white';
+			ctx.fillStyle = isDead(player, iceWalls) ? 'red' : 'white';
 			ctx.fill();
 
 			ctx.beginPath();
