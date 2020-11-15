@@ -20,7 +20,7 @@
 	visibility: hidden;
 }
 
-.game-scene {
+.game-canvas {
 	position: absolute;
 	top: 0;
 	left: 0;

@@ -8,8 +8,8 @@ import { createGame } from './game.js';
 
 export function EnceladusGame(el) {
 	const view = clone('gameView');
-	const { scene, left, right } = refs(view);
-	const game = createGame(scene);
+	const { canvas, left, right } = refs(view);
+	const game = createGame(canvas);
 
 	el.start = () => {
 		game.start();

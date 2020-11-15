@@ -14,10 +14,11 @@ import {
 	constrainStick,
 } from './vendor/game.js';
 import * as lune from '../data/lune.js';
-import { createMap } from './map.js';
+import { createMap, toMapCoords } from './map.js';
 
 const PI = Math.PI;
 const TAU = Math.PI * 2;
+const BOBBING_DRAG = 0.9895;
 const GAS_DRAG = 0.999;
 const GAS_GRAVITY = 0.04;
 const WATER_BOUYANCY = 0.06;
@@ -48,8 +49,6 @@ export function createGame(canvas) {
 	const map = createMap(lune);
 
 	const player = {
-		enteredGas: performance.now(),
-		wasNearGas: false,
 		fuel: 100,
 		x: 1440,
 		x0: 1440,
@@ -77,6 +76,25 @@ export function createGame(canvas) {
 		right: false,
 	};
 
+	const respawn = {
+		died: false,
+		x: player.x,
+		y: player.y,
+	};
+
+	function updateCamera() {
+		for (let i = RELAX; i--; ) {
+			constrainChain(player, link, {
+				length: 12,
+				strength: 0.025,
+			});
+			constrainChain(link, camera, {
+				length: 6,
+				strength: 0.05,
+			});
+		}
+	}
+
 	const loop = createTickLoop({
 		update({ now }) {
 			const { left, right } = controller;
@@ -88,21 +106,29 @@ export function createGame(canvas) {
 
 			if (isDead(player, iceWalls)) {
 				console.log('x_x');
+
+				respawn.died = true;
+				player.fuel = 100;
+				player.x = respawn.x;
+				player.x0 = respawn.x;
+				player.y = respawn.y;
+				player.y0 = respawn.y;
+
+				return updateCamera();
 			}
+
+			if (respawn.died && (left || right)) {
+				return updateCamera();
+			}
+
+			respawn.died = false;
 
 			const gasLevel = map.getGasLevel(x);
-
 			const isInGas = y < gasLevel;
 			const isNearGas = y < gasLevel + 10;
-
-			if (isNearGas) {
-				if (!player.wasNearGas) {
-					player.enteredGas = now;
-				}
-				player.wasNearGas = true;
-			} else {
-				player.wasNearGas = false;
-			}
+			const isNearWater = y > gasLevel - 10;
+			const isBobbing = isNearGas && isNearWater;
+			const isSlowlyBobbing = isBobbing && vy < 0.6;
 
 			if (fuel > 0) {
 				if (left) {
@@ -124,7 +150,7 @@ export function createGame(canvas) {
 				fuel -= 0.75;
 			} else if (left || right) {
 				fuel -= 0.5;
-			} else if (isNearGas && now - player.enteredGas > 100) {
+			} else if (isSlowlyBobbing) {
 				if (!fuel) {
 					fuel += 0.5;
 				}
@@ -132,13 +158,25 @@ export function createGame(canvas) {
 			}
 
 			if (isInGas) {
+				vy += GAS_GRAVITY;
+			} else {
+				vy -= WATER_BOUYANCY;
+			}
+
+			if (isSlowlyBobbing) {
+				vx *= BOBBING_DRAG;
+				vy *= BOBBING_DRAG;
+			} else if (isInGas) {
 				vx *= GAS_DRAG;
 				vy *= GAS_DRAG;
-				vy += GAS_GRAVITY;
 			} else {
 				vx *= WATER_DRAG;
 				vy *= WATER_DRAG;
-				vy -= WATER_BOUYANCY;
+			}
+
+			if (isSlowlyBobbing && fuel > 80) {
+				respawn.x = x;
+				respawn.y = gasLevel;
 			}
 
 			player.fuel = Math.max(0, Math.min(100, fuel));
@@ -147,16 +185,7 @@ export function createGame(canvas) {
 			player.y = Math.max(0, y + vy);
 			player.y0 = y;
 
-			for (let i = RELAX; i--; ) {
-				constrainChain(player, link, {
-					length: 12,
-					strength: 0.025,
-				});
-				constrainChain(link, camera, {
-					length: 6,
-					strength: 0.05,
-				});
-			}
+			updateCamera();
 		},
 
 		render() {

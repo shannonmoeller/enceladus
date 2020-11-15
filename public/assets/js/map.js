@@ -45,17 +45,26 @@ function indexSparseArray(list) {
 	};
 }
 
+export function toMapCoords(particle) {
+	const { x, y } = particle;
+
+	return {
+		x: x / MAP_SCALE_X,
+		y: y / MAP_SCALE_Y,
+	};
+}
+
+export function toWorldCoords(particle) {
+	const { x, y } = particle;
+
+	return {
+		x: x * MAP_SCALE_X,
+		y: y * MAP_SCALE_Y,
+	};
+}
+
 export function createMap({ notes, sustains }) {
-	const ice = notes.map((note, i) => ({
-		x: i * MAP_SCALE_X,
-		y: note * MAP_SCALE_Y,
-	}));
-
-	const gas = sustains.map((sustain, i) => ({
-		x: i * MAP_SCALE_X,
-		y: sustain * MAP_SCALE_Y,
-	}));
-
+	const ice = notes.map((y, x) => toWorldCoords({ x, y }));
 	const iceIndex = indexSparseArray(ice);
 	const icePath = new Path2D();
 
@@ -65,6 +74,7 @@ export function createMap({ notes, sustains }) {
 	icePath.lineTo(ice[ice.length - 1].x, 0);
 	icePath.closePath();
 
+	const gas = sustains.map((y, x) => toWorldCoords({ x, y }));
 	const gasIndex = indexSparseArray(gas);
 	const gasPath = new Path2D();
 
@@ -78,7 +88,7 @@ export function createMap({ notes, sustains }) {
 		gasPath.lineTo(point.x, prev.y);
 	});
 
-	icePath.lineTo(gas[gas.length - 1].x, 0);
+	gasPath.lineTo(gas[gas.length - 1].x, 0);
 	gasPath.closePath();
 
 	return {
