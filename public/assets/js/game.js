@@ -65,6 +65,10 @@ export function createGame(canvas) {
 		y: player.y,
 	};
 
+	function isDebug() {
+		return location.hash === '#debug';
+	}
+
 	function getDistanceFromNearestWall() {
 		const walls = map.getIceWalls(player.x);
 		const length = walls.length - 1;
@@ -79,6 +83,11 @@ export function createGame(canvas) {
 		}
 
 		return distance;
+	}
+
+	function resize() {
+		resizeContext(ctx);
+		camera.z = Math.min(ctx.width / 400, ctx.height / 400) * camera.scale;
 	}
 
 	function updateCamera() {
@@ -129,7 +138,7 @@ export function createGame(canvas) {
 			const isNearGas = y < gasLevel + 10;
 			const isNearWater = y > gasLevel - 15;
 			const isBobbing = isNearGas && isNearWater;
-			const isSlowlyBobbing = isBobbing && vy < 0.6;
+			const isSlowlyBobbing = isBobbing && vy < 0.4;
 
 			if (!isNearlyDead && isSlowlyBobbing && fuel > 80) {
 				respawn.x = x;
@@ -158,7 +167,7 @@ export function createGame(canvas) {
 				fuel -= 0.5;
 			} else if (isSlowlyBobbing) {
 				if (!fuel) {
-					fuel += 0.5;
+					fuel += 1;
 				}
 				fuel *= 1.02;
 			}
@@ -192,7 +201,6 @@ export function createGame(canvas) {
 		render() {
 			clearContext(ctx);
 
-			const isDebug = location.hash === '#debug';
 			const distanceFromWall = getDistanceFromNearestWall();
 			const isDead = distanceFromWall < 5;
 
@@ -205,7 +213,7 @@ export function createGame(canvas) {
 			ctx.fillStyle = 'hsl(162 100% 50% / 20%)';
 			ctx.fill(map.gasPath);
 
-			ctx.fillStyle = isDebug ? 'hsl(0 0% 0% / 50%)' : 'hsl(0 0% 0%)';
+			ctx.fillStyle = isDebug() ? 'hsl(0 0% 0% / 50%)' : 'hsl(0 0% 0%)';
 			ctx.fill(map.icePath);
 
 			ctx.beginPath();
@@ -232,16 +240,16 @@ export function createGame(canvas) {
 			ctx.lineWidth = 3;
 			ctx.stroke();
 
-			if (isDebug) {
+			if (isDebug()) {
 				const playerX = Math.round(player.x);
 				const playerY = Math.round(player.y);
 				const playerFuel = Math.round(player.fuel);
-				const mapX = Math.round(player.x / MAP_SCALE_X);
-				const mapY = Math.round(player.y / MAP_SCALE_Y);
+				const mapX = Math.round(toMapCoords(player).x);
+				const mapY = Math.round(toMapCoords(player).y);
 
 				ctx.fillStyle = 'hsl(0 0% 100% / 50%)';
 				ctx.fillText(
-					`p ${playerX},${playerY}`,
+					`w ${playerX},${playerY}`,
 					viewport.left + 20,
 					viewport.top + 30
 				);
@@ -257,20 +265,7 @@ export function createGame(canvas) {
 		},
 	});
 
-	function resize() {
-		resizeContext(ctx);
-		camera.z = Math.min(ctx.width / 400, ctx.height / 400) * camera.scale;
-	}
-
 	const game = {
-		ctx,
-		map,
-		player,
-		link,
-		camera,
-		controller,
-		loop,
-
 		get isPlaying() {
 			return loop.isPlaying;
 		},
@@ -283,6 +278,8 @@ export function createGame(canvas) {
 			controller.right = value;
 		},
 
+		resize,
+
 		start() {
 			resize();
 			loop.start();
@@ -290,10 +287,6 @@ export function createGame(canvas) {
 
 		stop() {
 			loop.stop();
-		},
-
-		resize() {
-			resize();
 		},
 
 		zoomIn() {
@@ -304,6 +297,17 @@ export function createGame(canvas) {
 		zoomOut() {
 			camera.scale /= 1.1;
 			resize();
+		},
+
+		goTo(x) {
+			const y = map.getGasLevel(x);
+
+			player.x = player.x0 = x;
+			player.y = player.y0 = y;
+			link.x = link.x0 = x;
+			link.y = link.y0 = y;
+			camera.x = camera.x0 = x;
+			camera.y = camera.y0 = y;
 		},
 	};
 
