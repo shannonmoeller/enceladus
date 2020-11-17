@@ -88,11 +88,13 @@ defineElement('enc-game', (el) => {
 
 	leftEl.addEventListener('click', unhandle);
 	leftEl.addEventListener('contextmenu', unhandle);
+	leftEl.addEventListener('touchstart', unhandle);
 	leftEl.addEventListener('pointerdown', handleLeftDown);
 	leftEl.addEventListener('pointerup', handleLeftUp);
 
 	rightEl.addEventListener('click', unhandle);
 	rightEl.addEventListener('contextmenu', unhandle);
+	rightEl.addEventListener('touchstart', unhandle);
 	rightEl.addEventListener('pointerdown', handleRightDown);
 	rightEl.addEventListener('pointerup', handleRightUp);
 

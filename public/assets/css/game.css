@@ -30,7 +30,8 @@
 
 .game-pause {
 	position: absolute;
-	top: env(safe-area-inset-top, 20px);
+	top: env(safe-area-inset-top);
 	left: 50%;
+	padding: 1em;
 	transform: translateX(-50%);
 }
