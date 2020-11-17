@@ -9,7 +9,7 @@
 
 		<meta charset="utf-8" />
 		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover,width=device-width" />
-		<meta name="description" content="A game by Shannon Moeller." />
+		<meta name="description" content="A game by Shannon Moeller for Game Off 2020." />
 		<link rel="manifest" href="/manifest.json" />
 
 		<title>Enceladus</title>
@@ -26,28 +26,57 @@
 			@import './assets/css/index.css';
 		</style>
 
-		<script>
-			addEventListener('load', () => {
-				document.body.classList.remove('loading');
-			});
-		</script>
-
 	</head>
-	<body class="loading">
+	<body>
 
-		<enceladus-app>
-			<article class="lobby" ref="lobbyEl">
-				<h1 class="lobby-title">Enceladus</h1>
-				<button class="button" ref="startEl">start</button>
-			</article>
+		<enc-menu>
+			<h1>Enceladus</h1>
+			<ul>
+				<li><button ref="continueEl" disabled>Continue</button></li>
+				<li><button ref="newEl">New Game</button></li>
+				<li><button ref="optionsEl">Options</button></li>
+				<li><button ref="creditsEl">Credits</button></li>
+			</ul>
+		</enc-menu>
 
-			<article class="game closed" ref="gameEl">
-				<canvas class="game-canvas" ref="canvasEl"></canvas>
-				<button class="game-left" ref="leftEl">left</button>
-				<button class="game-right" ref="rightEl">right</button>
-				<button class="game-pause button" ref="pauseEl">pause</a>
-			</article>
-		</enceladus-app>
+		<enc-options hidden>
+			<h2>Options</h2>
+			<ul>
+				<li>
+					<label>
+						Volume
+						<input type="range" ref="volumeEl" value="100" min="0" max="100" step="1" />
+					</label>
+				</li>
+				<li>
+					<label>
+						Quality
+						<input type="range" ref="qualityEl" value="100" min="0" max="100" step="1" />
+					</label>
+				</li>
+				<li>
+					<label>
+						Bloom
+						<input type="checkbox" ref="bloomEl" checked />
+					</label>
+				</li>
+			</ul>
+			<button ref="backEl">Back</button>
+		</enc-options>
+
+		<enc-credits hidden>
+			<h2>Credits</h2>
+			<p>Art and development by Shannon Moeller.</p>
+			<p>Special thanks to Diego Escalante and Matt Dunlap for feedback, testing, and encouragement.</p>
+			<button ref="backEl">Back</button>
+		</enc-credits>
+
+		<enc-game hidden>
+			<canvas class="game-canvas" ref="canvasEl"></canvas>
+			<button class="game-left" ref="leftEl">Left</button>
+			<button class="game-right" ref="rightEl">Right</button>
+			<button class="game-pause" ref="backEl">Pause</button>
+		</enc-game>
 
 	</body>
 </html>

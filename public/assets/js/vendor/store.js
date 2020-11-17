@@ -2,6 +2,4 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-@import './theme.css';
-@import './html.css';
-@import './game.css';
+export * from 'https://code.shannonmoeller.com/store/v1.0.0/store.js';

@@ -3,7 +3,6 @@
  */
 
 import {
-	createContext,
 	createViewport,
 	clearContext,
 	resizeContext,
@@ -15,6 +14,7 @@ import {
 } from './vendor/game.js';
 import * as lune from '../data/lune.js';
 import { createMap, toMapCoords } from './map.js';
+import { slot1 } from './state.js';
 
 const PI = Math.PI;
 const TAU = Math.PI * 2;
@@ -27,17 +27,27 @@ const RELAX = 3;
 const MAP_SCALE_X = 16;
 const MAP_SCALE_Y = 0.66;
 
-export function createGame(canvas) {
-	const ctx = createContext(canvas);
+function isDebug() {
+	return location.hash === '#debug';
+}
+
+export function createGame(ctx) {
 	const map = createMap(lune);
 
+	const controller = {
+		up: false,
+		down: false,
+		left: false,
+		right: false,
+	};
+
 	const player = {
-		fuel: 100,
 		x: 1440,
 		x0: 1440,
 		y: 220,
 		y0: 220,
 		mass: 0,
+		fuel: 100,
 	};
 
 	const link = {
@@ -54,20 +64,11 @@ export function createGame(canvas) {
 		scale: 1,
 	};
 
-	const controller = {
-		left: false,
-		right: false,
-	};
-
 	const respawn = {
 		died: false,
 		x: player.x,
 		y: player.y,
 	};
-
-	function isDebug() {
-		return location.hash === '#debug';
-	}
 
 	function getDistanceFromNearestWall() {
 		const walls = map.getIceWalls(player.x);
@@ -85,8 +86,20 @@ export function createGame(canvas) {
 		return distance;
 	}
 
+	function goTo(x) {
+		const y = map.getGasLevel(x);
+
+		player.x = player.x0 = x;
+		player.y = player.y0 = y;
+		link.x = link.x0 = x;
+		link.y = link.y0 = y;
+		camera.x = camera.x0 = x;
+		camera.y = camera.y0 = y;
+	}
+
 	function resize() {
 		resizeContext(ctx);
+
 		camera.z = Math.min(ctx.width / 400, ctx.height / 400) * camera.scale;
 	}
 
@@ -98,7 +111,7 @@ export function createGame(canvas) {
 			});
 			constrainChain(link, camera, {
 				length: 6,
-				strength: 0.05,
+				strength: 0.025,
 			});
 		}
 	}
@@ -141,6 +154,7 @@ export function createGame(canvas) {
 			const isSlowlyBobbing = isBobbing && vy < 0.4;
 
 			if (!isNearlyDead && isSlowlyBobbing && fuel > 80) {
+				slot1.set(x);
 				respawn.x = x;
 				respawn.y = gasLevel;
 			}
@@ -265,51 +279,27 @@ export function createGame(canvas) {
 		},
 	});
 
-	const game = {
-		get isPlaying() {
-			return loop.isPlaying;
-		},
+	visualViewport.addEventListener('resize', resize, { passive: true });
 
-		set left(value) {
-			controller.left = value;
-		},
+	function start() {
+		resize();
+		goTo(slot1.get());
+		loop.start();
+	}
 
-		set right(value) {
-			controller.right = value;
-		},
+	function stop() {
+		loop.stop();
+	}
 
-		resize,
+	return {
+		camera,
+		controller,
+		loop,
+		map,
+		player,
 
-		start() {
-			resize();
-			loop.start();
-		},
-
-		stop() {
-			loop.stop();
-		},
-
-		zoomIn() {
-			camera.scale *= 1.1;
-			resize();
-		},
-
-		zoomOut() {
-			camera.scale /= 1.1;
-			resize();
-		},
-
-		goTo(x) {
-			const y = map.getGasLevel(x);
-
-			player.x = player.x0 = x;
-			player.y = player.y0 = y;
-			link.x = link.x0 = x;
-			link.y = link.y0 = y;
-			camera.x = camera.x0 = x;
-			camera.y = camera.y0 = y;
-		},
+		goTo,
+		start,
+		stop,
 	};
-
-	return game;
 }

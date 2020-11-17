@@ -1,6 +1,6 @@
-# enceladus
+# Enceladus
 
-My entry for [Game Off 2020](https://itch.io/jam/game-off-2020).
+A game by Shannon Moeller for [Game Off 2020](https://itch.io/jam/game-off-2020).
 
 https://enceladus.shannonmoeller.com
 
