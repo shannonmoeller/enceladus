@@ -8,13 +8,6 @@ import { route, volume, quality, bloom } from './state.js';
 defineElement('enc-options', (el) => {
 	const { volumeEl, qualityEl, bloomEl, backEl } = refs(el);
 
-	route.subscribe(
-		(state) => {
-			el.hidden = state !== 'options';
-		},
-		{ immediate: true }
-	);
-
 	volumeEl.value = volume.get();
 	volumeEl.onchange = () => {
 		volume.set(Number(volumeEl.value));

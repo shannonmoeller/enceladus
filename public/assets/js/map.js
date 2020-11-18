@@ -2,6 +2,8 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
+import { getDistance, findClosest } from './vendor/game.js';
+
 const MAP_SCALE_X = 16;
 const MAP_SCALE_Y = 0.66;
 
@@ -10,8 +12,7 @@ function indexSparseArray(list) {
 	const filtered = [];
 	const indexed = [];
 
-	let prev = 0;
-	for (let i = 0; i < list.length; i++) {
+	for (let i = 0, prev = 0; i < list.length; i++) {
 		const item = list[i];
 
 		if (item != null) {
@@ -22,26 +23,28 @@ function indexSparseArray(list) {
 		}
 	}
 
+	function findCurrent(i) {
+		const indexedKey = Math.max(0, Math.min(i, length - 1));
+		const filteredKey = indexed[indexedKey];
+
+		return filtered[filteredKey - 1];
+	}
+
+	function findNearest(i, distance = 1) {
+		const indexedKey = Math.max(0, Math.min(i, length - 1));
+		const filteredKey = indexed[indexedKey];
+
+		return filtered.slice(
+			Math.max(0, filteredKey - distance),
+			filteredKey + distance
+		);
+	}
+
 	return {
 		indexed,
 		filtered,
-
-		findCurrent(i) {
-			const indexedKey = Math.max(0, Math.min(i, length - 1));
-			const filteredKey = indexed[indexedKey];
-
-			return filtered[filteredKey - 1];
-		},
-
-		findNearest(i, distance = 1) {
-			const indexedKey = Math.max(0, Math.min(i, length - 1));
-			const filteredKey = indexed[indexedKey];
-
-			return filtered.slice(
-				Math.max(0, filteredKey - distance),
-				filteredKey + distance
-			);
-		},
+		findCurrent,
+		findNearest,
 	};
 }
 
@@ -77,37 +80,54 @@ export function createMap({ notes, sustains }) {
 	const gas = sustains.map((y, x) => toWorldCoords({ x, y }));
 	const gasIndex = indexSparseArray(gas);
 	const gasPath = new Path2D();
+	let prev = { x: 0, y: 0 };
 
 	gasPath.moveTo(0, -1000);
 	gasPath.lineTo(0, gas[0].y);
-
-	let prev = { x: 0, y: 0 };
 	gas.forEach((point) => {
 		gasPath.lineTo(point.x, prev.y);
 		prev = point;
 		gasPath.lineTo(point.x, prev.y);
 	});
-
 	gasPath.lineTo(gas[gas.length - 1].x, -1000);
 	gasPath.closePath();
+
+	function getIceWalls(x) {
+		const mapX = Math.floor(x / MAP_SCALE_X);
+
+		return iceIndex.findNearest(mapX, 2);
+	}
+
+	function getDistanceToIceWalls(player) {
+		const walls = getIceWalls(player.x);
+		const length = walls.length - 1;
+		let distance = Infinity;
+
+		for (let i = 0; i < length; i++) {
+			const a = walls[i];
+			const b = walls[i + 1];
+			const closest = findClosest(a, b, player);
+
+			distance = Math.min(distance, getDistance(player, closest));
+		}
+
+		return distance;
+	}
+
+	function getGasLevel(x) {
+		const mapX = Math.floor(x / MAP_SCALE_X);
+
+		return gasIndex.findCurrent(mapX).y;
+	}
 
 	return {
 		ice,
 		icePath,
-
-		getIceWalls(x) {
-			const mapX = Math.floor(x / MAP_SCALE_X);
-
-			return iceIndex.findNearest(mapX, 2);
-		},
+		getIceWalls,
+		getDistanceToIceWalls,
 
 		gas,
 		gasPath,
-
-		getGasLevel(x) {
-			const mapX = Math.floor(x / MAP_SCALE_X);
-
-			return gasIndex.findCurrent(mapX).y;
-		},
+		getGasLevel,
 	};
 }

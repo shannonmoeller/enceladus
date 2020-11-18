@@ -1,0 +1,7 @@
+/**
+ * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
+.editor {
+	background: hsl(var(--primary-hs) 20%);
+}

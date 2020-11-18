@@ -8,13 +8,6 @@ import { route, slot1 } from './state.js';
 defineElement('enc-menu', (el) => {
 	const { continueEl, newEl, optionsEl, creditsEl } = refs(el);
 
-	route.subscribe(
-		(state) => {
-			el.hidden = state !== 'menu';
-		},
-		{ immediate: true }
-	);
-
 	slot1.subscribe(
 		(state) => {
 			continueEl.disabled = state == null;

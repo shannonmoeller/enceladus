@@ -1,10 +1,10 @@
 <!doctype html>
 
 <!--
- Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
--->
+ ! Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ !-->
 
-<html lang="en">
+<html dir="ltr" lang="en">
 	<head>
 
 		<meta charset="utf-8" />
@@ -29,54 +29,62 @@
 	</head>
 	<body>
 
-		<enc-menu>
-			<h1>Enceladus</h1>
-			<ul>
-				<li><button ref="continueEl" disabled>Continue</button></li>
-				<li><button ref="newEl">New Game</button></li>
-				<li><button ref="optionsEl">Options</button></li>
-				<li><button ref="creditsEl">Credits</button></li>
-			</ul>
-		</enc-menu>
+		<enc-route name="menu">
+			<enc-menu>
+				<h1>Enceladus</h1>
+				<ul class="menu">
+					<li><button ref="continueEl" disabled>Continue</button></li>
+					<li><button ref="newEl">New Game</button></li>
+					<li><button ref="optionsEl">Options</button></li>
+					<li><button ref="creditsEl">Credits</button></li>
+				</ul>
+			</enc-menu>
+		</enc-route>
 
-		<enc-options hidden>
-			<h2>Options</h2>
-			<ul>
-				<li>
-					<label>
-						Volume
-						<input type="range" ref="volumeEl" value="100" min="0" max="100" step="1" />
-					</label>
-				</li>
-				<li>
-					<label>
-						Quality
-						<input type="range" ref="qualityEl" value="100" min="0" max="100" step="1" />
-					</label>
-				</li>
-				<li>
-					<label>
-						Bloom
-						<input type="checkbox" ref="bloomEl" checked />
-					</label>
-				</li>
-			</ul>
-			<button ref="backEl">Back</button>
-		</enc-options>
+		<enc-route name="options" hidden>
+			<enc-options>
+				<h2>Options</h2>
+				<ul class="menu">
+					<li>
+						<label>
+							Volume
+							<input type="range" ref="volumeEl" value="100" min="0" max="100" step="1" />
+						</label>
+					</li>
+					<li>
+						<label>
+							Quality
+							<input type="range" ref="qualityEl" value="100" min="0" max="100" step="1" />
+						</label>
+					</li>
+					<li>
+						<label>
+							Bloom
+							<input type="checkbox" ref="bloomEl" checked />
+						</label>
+					</li>
+				</ul>
+				<button ref="backEl">Back</button>
+			</enc-options>
+		</enc-route>
 
-		<enc-credits hidden>
-			<h2>Credits</h2>
-			<p>Art and development by Shannon Moeller.</p>
-			<p>Special thanks to Diego Escalante and Matt Dunlap for feedback, testing, and encouragement.</p>
-			<button ref="backEl">Back</button>
-		</enc-credits>
+		<enc-route name="credits" hidden>
+			<enc-credits>
+				<h2>Credits</h2>
+				<p>Art and development by Shannon Moeller.</p>
+				<p>Special thanks to Diego Escalante and Matt Dunlap for feedback, testing, and encouragement.</p>
+				<button ref="backEl">Back</button>
+			</enc-credits>
+		</enc-route>
 
-		<enc-game hidden>
-			<canvas class="game-canvas" ref="canvasEl"></canvas>
-			<button class="game-left" ref="leftEl">Left</button>
-			<button class="game-right" ref="rightEl">Right</button>
-			<button class="game-pause" ref="backEl">Pause</button>
-		</enc-game>
+		<enc-route name="game" hidden>
+			<enc-game class="game">
+				<canvas class="game-canvas" ref="canvasEl"></canvas>
+				<button class="game-left" ref="leftEl">Left</button>
+				<button class="game-right" ref="rightEl">Right</button>
+				<button class="game-pause" ref="backEl">Pause</button>
+			</enc-game>
+		</enc-route>
 
 	</body>
 </html>

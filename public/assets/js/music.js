@@ -2,7 +2,6 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import { lune } from '../data/lune.js';
 import { prelude } from '../data/prelude.js';
 
 const NOTES = {

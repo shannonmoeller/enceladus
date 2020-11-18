@@ -8,13 +8,6 @@ import { route } from './state.js';
 defineElement('enc-credits', (el) => {
 	const { backEl } = refs(el);
 
-	route.subscribe(
-		(state) => {
-			el.hidden = state !== 'credits';
-		},
-		{ immediate: true }
-	);
-
 	backEl.onclick = () => {
 		route.set('menu');
 	};

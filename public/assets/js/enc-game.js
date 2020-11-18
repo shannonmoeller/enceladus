@@ -4,8 +4,8 @@
 
 import { defineElement, refs } from './vendor/dhtml.js';
 import { createContext } from './vendor/game.js';
-import { route } from './state.js';
 import { createGame } from './game.js';
+import { route } from './state.js';
 
 const KEYS = {
 	ArrowUp: 'up',
@@ -26,10 +26,8 @@ defineElement('enc-game', (el) => {
 	route.subscribe(
 		(state) => {
 			if (state === 'game') {
-				el.hidden = false;
 				game.start();
 			} else {
-				el.hidden = true;
 				game.stop();
 			}
 		},
@@ -38,6 +36,10 @@ defineElement('enc-game', (el) => {
 
 	function unhandle(event) {
 		event.preventDefault();
+	}
+
+	function handleResize() {
+		game.resize();
 	}
 
 	function handleKeyDown(event) {
@@ -82,6 +84,8 @@ defineElement('enc-game', (el) => {
 		event.preventDefault();
 		route.set('menu');
 	}
+
+	visualViewport.addEventListener('resize', handleResize, { passive: true });
 
 	document.addEventListener('keydown', handleKeyDown);
 	document.addEventListener('keyup', handleKeyUp);
