@@ -42,8 +42,14 @@ export function createEditor(ctx) {
 			x: camera.x + (x - ctx.width / 2) / camera.z,
 			y: camera.y + (y - ctx.height / 2) / camera.z,
 		});
+		const floorX = Math.floor(mapPoint.x);
+		const floorY = Math.floor(mapPoint.y);
 
-		sustains[Math.floor(mapPoint.x)] = Math.max(0, Math.floor(mapPoint.y));
+		if (floorX < 0 || floorX > notes.length) {
+			return;
+		}
+
+		sustains[floorX] = Math.max(0, floorY);
 	}
 
 	function remove(x, y) {
@@ -69,13 +75,22 @@ export function createEditor(ctx) {
 	}
 
 	function serialize() {
-		let data = 'export const sustains = [];';
+		let data = 'export const sustains = [';
+		let line = '';
 
-		sustains.forEach((y, x) => {
-			data += `\nsustains[${x}] = ${y};`;
-		});
+		for (let i = 0; i < notes.length; i++) {
+			const value =
+				i in sustains ? `${sustains[i]},` : i === notes.length - 1 ? '0' : ',';
 
-		data += `\nsustains[notes.length - 1] = 0;`;
+			if (line.length + value.length > 78) {
+				data += `\n\t${line}`;
+				line = value;
+			} else {
+				line += value;
+			}
+		}
+
+		data += `\n\t${line}\n];`;
 
 		return data;
 	}
