@@ -2,6 +2,6 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-@import './theme.css';
-@import './html.css';
-@import './game.css';
+.fluid {
+	background: hsl(var(--primary-hs) 20%);
+}

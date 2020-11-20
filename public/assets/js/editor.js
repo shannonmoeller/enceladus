@@ -52,10 +52,10 @@ export function createEditor(ctx) {
 		sustains[floorX] = Math.max(0, floorY);
 	}
 
-	function remove(x, y) {
+	function remove(mouseX, mouseY) {
 		const mapPoint = toMapCoords({
-			x: camera.x + (x - ctx.width / 2) / camera.z,
-			y: camera.y + (y - ctx.height / 2) / camera.z,
+			x: camera.x + (mouseX - ctx.width / 2) / camera.z,
+			y: camera.y + (mouseY - ctx.height / 2) / camera.z,
 		});
 
 		delete sustains[Math.floor(mapPoint.x)];
@@ -101,8 +101,8 @@ export function createEditor(ctx) {
 
 		add,
 		remove,
-		start,
 		resize,
+		start,
 		stop,
 		serialize,
 	};
