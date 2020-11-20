@@ -6,7 +6,7 @@ import { clearContext, resizeContext, createTickLoop } from './vendor/game.js';
 
 const TAU = Math.PI * 2;
 
-const scale = 40;
+const scale = 60;
 // prettier-ignore
 const vectors = [
 	[[ 1, 1], [ 1, 1], [-1, 1], [-1, 1]],
