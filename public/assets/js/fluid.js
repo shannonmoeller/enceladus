@@ -2,22 +2,27 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import { clearContext, resizeContext, createTickLoop } from './vendor/game.js';
+import {
+	clearContext,
+	resizeContext,
+	createTickLoop,
+	constrainSeries,
+} from './vendor/game.js';
 
-const TAU = Math.PI * 2;
+const RELAX = 3;
+const SCALE = 60;
 
-const scale = 60;
 // prettier-ignore
 const vectors = [
-	[[ 1, 1], [ 1, 1], [-1, 1], [-1, 1]],
-	[[ 1, 1], [ 1, 1], [-1, 1], [-1, 1]],
-	[[ 1,-1], [ 1,-1], [-1,-1], [-1,-1]],
-	[[ 1,-1], [ 1,-1], [-1,-1], [-1,-1]],
+	[[ 1, 1], [ 1, 1], [ 1, 1], [-1, 1], [-1, 1], [-1, 1]],
+	[[ 1, 1], [ 1, 1], [ 1, 1], [-1, 1], [-1, 1], [-1, 1]],
+	[[ 1,-1], [ 1,-1], [ 1,-1], [-1,-1], [-1,-1], [-1,-1]],
+	[[ 1,-1], [ 1,-1], [ 1,-1], [-1,-1], [-1,-1], [-1,-1]],
 ];
 
 function getVector(x, y) {
-	const mapX = Math.floor(x / scale);
-	const mapY = Math.floor(y / scale);
+	const mapX = Math.floor(x / SCALE);
+	const mapY = Math.floor(y / SCALE);
 
 	return vectors[mapY]?.[mapX];
 }
@@ -34,15 +39,15 @@ export function createFluid(ctx) {
 	const loop = createTickLoop({
 		update() {
 			particles.forEach((particle) => {
-				let { x, x0, y, y0 } = particle;
+				const { x, x0, y, y0 } = particle;
 				let vx = x - x0;
 				let vy = y - y0;
 
 				let vector = getVector(x, y);
 
 				if (vector) {
-					vx += vector[0] * 0.1;
-					vy += vector[1] * 0.1;
+					vx += vector[0] * 0.025;
+					vy += vector[1] * 0.025;
 				}
 
 				particle.x += vx;
@@ -50,6 +55,13 @@ export function createFluid(ctx) {
 				particle.y += vy;
 				particle.y0 = y;
 			});
+
+			for (let i = RELAX; i--; ) {
+				constrainSeries(particles, {
+					length: 100,
+					strength: 0.01,
+				});
+			}
 		},
 
 		render() {
@@ -60,17 +72,25 @@ export function createFluid(ctx) {
 
 			ctx.save();
 			ctx.strokeStyle = 'black';
-			ctx.strokeRect(0, 0, scale * width, scale * height);
+			ctx.strokeRect(0, 0, SCALE * width, SCALE * height);
 			ctx.restore();
 
-			particles.forEach(({ x, y }) => {
-				ctx.save();
+			ctx.save();
+			ctx.globalCompositeOperation = 'overlay';
+			particles.forEach((particle) => {
+				const { x, x0, y, y0 } = particle;
+				const value = Math.hypot(x - x0, y - y0);
+				const color = `hsl(180 100% 80% / ${50 * value}%)`;
+
 				ctx.beginPath();
-				ctx.arc(x, y, 1, 0, TAU);
-				ctx.fillStyle = 'black';
-				ctx.fill();
-				ctx.restore();
+				ctx.moveTo(x0, y0);
+				ctx.lineTo(x, y);
+				ctx.lineCap = 'round';
+				ctx.lineWidth = Math.min(value, 2);
+				ctx.strokeStyle = color;
+				ctx.stroke();
 			});
+			ctx.restore();
 		},
 	});
 
@@ -79,7 +99,7 @@ export function createFluid(ctx) {
 		const y = mouseY / camera.z;
 
 		particles.push({ x, x0: x, y, y0: y });
-		particles.splice(0, particles.length - 256);
+		particles.splice(0, particles.length - 512);
 	}
 
 	function resize() {

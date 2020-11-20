@@ -13,6 +13,10 @@ defineElement('enc-fluid', (el) => {
 	let isDown = false;
 	let isDragging = false;
 
+	function unhandle(event) {
+		event.preventDefault();
+	}
+
 	function handleResize() {
 		fluid.resize();
 	}
@@ -49,6 +53,7 @@ defineElement('enc-fluid', (el) => {
 	visualViewport.addEventListener('resize', handleResize, { passive: true });
 
 	canvasEl.addEventListener('click', handleClick);
+	canvasEl.addEventListener('contextmenu', unhandle);
 	canvasEl.addEventListener('pointerdown', handlePointerDown);
 	canvasEl.addEventListener('pointermove', handlePointerMove);
 	canvasEl.addEventListener('pointerup', handlePointerUp);
