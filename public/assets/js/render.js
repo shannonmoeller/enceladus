@@ -48,6 +48,9 @@ export function renderGas(ctx, path) {
 	ctx.fillStyle = 'hsl(162 50% 40% / 20%)';
 	ctx.fill(path);
 
+	ctx.strokeStyle = 'hsl(162 100% 40% / 20%)';
+	ctx.stroke(path);
+
 	ctx.translate(0, -4);
 	ctx.fillStyle = 'hsl(162 100% 40% / 20%)';
 	ctx.fill(path);

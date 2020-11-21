@@ -188,8 +188,8 @@ export function createGame(main) {
 				y: camera.y - 20,
 			});
 
-			renderSilt(ctx, viewport);
 			renderGas(ctx, map.gasPath);
+			renderSilt(ctx, viewport);
 			renderIce(ctx, map.icePath);
 			renderPlayer(ctx, player);
 			renderMeter(ctx, player);
