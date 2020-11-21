@@ -22,7 +22,7 @@ export function nextRandom(t) {
 
 export function renderSilt(ctx, viewport) {
 	ctx.save();
-	ctx.fillStyle = 'hsl(0 0% 0% / 80%)';
+	ctx.fillStyle = 'hsl(162 100% 50% / 30%)';
 
 	const left = Math.floor(viewport.left);
 	const right = Math.floor(viewport.right);
@@ -30,7 +30,13 @@ export function renderSilt(ctx, viewport) {
 	for (let x = left; x < right; x++) {
 		let y = nextRandom(x) * 2000;
 
-		ctx.fillRect(x, y, 1, 1);
+		if (x % 3) {
+			continue;
+		}
+
+		ctx.beginPath();
+		ctx.arc(x, y, 0.5, 0, TAU);
+		ctx.fill();
 	}
 
 	ctx.restore();
@@ -41,9 +47,6 @@ export function renderGas(ctx, path) {
 
 	ctx.fillStyle = 'hsl(162 50% 40% / 20%)';
 	ctx.fill(path);
-
-	ctx.strokeStyle = 'hsl(162 100% 80% / 10%)';
-	ctx.stroke(path);
 
 	ctx.translate(0, -4);
 	ctx.fillStyle = 'hsl(162 100% 40% / 20%)';
