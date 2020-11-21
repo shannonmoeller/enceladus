@@ -30,21 +30,21 @@
 	<body>
 
 		<enc-route name="menu">
-			<enc-menu>
-				<h1>Enceladus</h1>
-				<ul class="menu">
-					<li><button ref="continueEl" disabled>Continue</button></li>
-					<li><button ref="newEl">New Game</button></li>
-					<li><button ref="optionsEl">Options</button></li>
-					<li><button ref="creditsEl">Credits</button></li>
+			<enc-menu class="ui">
+				<h1 class="ui-title">Enceladus</h1>
+				<ul class="ui-menu">
+					<li><button class="ui-button" ref="continueEl" disabled>Continue</button></li>
+					<li><button class="ui-button" ref="newEl">New Game</button></li>
+					<li><button class="ui-button" ref="optionsEl">Options</button></li>
+					<li><button class="ui-button" ref="creditsEl">Credits</button></li>
 				</ul>
 			</enc-menu>
 		</enc-route>
 
 		<enc-route name="options" hidden>
-			<enc-options>
-				<h2>Options</h2>
-				<ul class="menu">
+			<enc-options class="ui">
+				<h2 class="ui-title">Options</h2>
+				<ul class="ui-menu">
 					<li>
 						<label>
 							Volume
@@ -58,16 +58,16 @@
 						</label>
 					</li>
 				</ul>
-				<button ref="backEl">Back</button>
+				<button class="ui-button" ref="backEl">Back</button>
 			</enc-options>
 		</enc-route>
 
 		<enc-route name="credits" hidden>
-			<enc-credits>
-				<h2>Credits</h2>
+			<enc-credits class="ui">
+				<h2 class="ui-title">Credits</h2>
 				<p>Art and development by Shannon Moeller.</p>
 				<p>Special thanks to Diego Escalante and Matt Dunlap for feedback, testing, and encouragement.</p>
-				<button ref="backEl">Back</button>
+				<button class="ui-button" ref="backEl">Back</button>
 			</enc-credits>
 		</enc-route>
 

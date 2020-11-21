@@ -22,7 +22,7 @@ export function nextRandom(t) {
 
 export function renderSilt(ctx, viewport) {
 	ctx.save();
-	ctx.fillStyle = 'hsl(0 0% 0% / 60%)';
+	ctx.fillStyle = 'hsl(0 0% 0% / 80%)';
 
 	const left = Math.floor(viewport.left);
 	const right = Math.floor(viewport.right);
@@ -38,15 +38,30 @@ export function renderSilt(ctx, viewport) {
 
 export function renderGas(ctx, path) {
 	ctx.save();
+
+	ctx.fillStyle = 'hsl(162 50% 40% / 20%)';
+	ctx.fill(path);
+
+	ctx.strokeStyle = 'hsl(162 100% 80% / 10%)';
+	ctx.stroke(path);
+
+	ctx.translate(0, -4);
 	ctx.fillStyle = 'hsl(162 100% 40% / 20%)';
 	ctx.fill(path);
+
 	ctx.restore();
 }
 
 export function renderIce(ctx, path) {
 	ctx.save();
+
+	ctx.fillStyle = 'hsl(162 20% 5%)';
+	ctx.fill(path);
+
+	ctx.translate(1.6, -16);
 	ctx.fillStyle = 'hsl(0 0% 0%)';
 	ctx.fill(path);
+
 	ctx.restore();
 }
 
@@ -69,7 +84,7 @@ export function renderMeter(ctx, player) {
 	ctx.beginPath();
 	ctx.arc(player.x, player.y, 10, TAU * 0.333, TAU * 0.666);
 	ctx.strokeStyle = 'hsl(0 0% 100% / 20%)';
-	ctx.lineWidth = 2.5;
+	ctx.lineWidth = 2;
 	ctx.stroke();
 
 	ctx.beginPath();
