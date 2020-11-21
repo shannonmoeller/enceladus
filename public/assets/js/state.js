@@ -32,6 +32,5 @@ function createPersistentStore(key, value) {
 
 export const route = createStore('menu');
 export const slot1 = createPersistentStore('slot1', null);
-export const volume = createPersistentStore('volume', 100);
-export const quality = createPersistentStore('quality', 100);
-export const bloom = createPersistentStore('bloom', true);
+export const volume = createPersistentStore('volume', 1);
+export const quality = createPersistentStore('quality', 1);

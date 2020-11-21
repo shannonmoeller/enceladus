@@ -9,14 +9,18 @@ import {
 	createTickLoop,
 } from './vendor/game.js';
 import { notes, sustains } from '../data/lune.js';
-import { createMap, toMapCoords } from './map.js';
+import { createMap, toMapCoords, toWorldCoords } from './map.js';
 
 export function createEditor(ctx) {
-	const camera = {
-		x: 0,
-		y: 0,
-		z: 1,
-	};
+	const camera = { x: 0, y: 0, z: 1 };
+	const pointer = { x: 0, y: 0 };
+
+	function toPointerCoords() {
+		return {
+			x: camera.x + (pointer.x - ctx.width / 2) / camera.z,
+			y: camera.y + (pointer.y - ctx.height / 2) / camera.z,
+		};
+	}
 
 	const loop = createTickLoop({
 		update() {},
@@ -26,6 +30,9 @@ export function createEditor(ctx) {
 
 			const viewport = createViewport(ctx, camera);
 			const map = createMap({ notes, sustains });
+			const pointerCoords = toPointerCoords();
+			const mapCoords = toMapCoords(pointerCoords);
+			const worldCoords = toWorldCoords(mapCoords);
 
 			ctx.fillStyle = 'hsl(162 100% 30%)';
 			ctx.fill(map.gasPath);
@@ -33,17 +40,26 @@ export function createEditor(ctx) {
 			ctx.fillStyle = 'hsl(0 0% 0% / 50%)';
 			ctx.fill(map.icePath);
 
+			ctx.save();
+			ctx.globalCompositeOperation = 'overlay';
+			ctx.fillStyle = 'hsl(0 0% 100% / 10%)';
+			ctx.fillRect(
+				worldCoords.left,
+				-1000,
+				worldCoords.right - worldCoords.left,
+				3000
+			);
+			ctx.restore();
+
 			viewport.restore();
 		},
 	});
 
-	function add(x, y) {
-		const mapPoint = toMapCoords({
-			x: camera.x + (x - ctx.width / 2) / camera.z,
-			y: camera.y + (y - ctx.height / 2) / camera.z,
-		});
-		const floorX = Math.floor(mapPoint.x);
-		const floorY = Math.floor(mapPoint.y);
+	function add() {
+		const pointerCoords = toPointerCoords();
+		const mapCoords = toMapCoords(pointerCoords);
+		const floorX = Math.floor(mapCoords.x);
+		const floorY = Math.floor(mapCoords.y);
 
 		if (floorX < 0 || floorX > notes.length) {
 			return;
@@ -52,13 +68,11 @@ export function createEditor(ctx) {
 		sustains[floorX] = Math.max(0, floorY);
 	}
 
-	function remove(mouseX, mouseY) {
-		const mapPoint = toMapCoords({
-			x: camera.x + (mouseX - ctx.width / 2) / camera.z,
-			y: camera.y + (mouseY - ctx.height / 2) / camera.z,
-		});
+	function remove() {
+		const pointerCoords = toPointerCoords();
+		const mapCoords = toMapCoords(pointerCoords);
 
-		delete sustains[Math.floor(mapPoint.x)];
+		delete sustains[Math.floor(mapCoords.x)];
 	}
 
 	function resize() {
@@ -97,6 +111,7 @@ export function createEditor(ctx) {
 
 	return {
 		camera,
+		pointer,
 		loop,
 
 		add,

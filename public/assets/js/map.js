@@ -50,19 +50,27 @@ function indexSparseArray(list) {
 
 export function toMapCoords(particle) {
 	const { x, y } = particle;
+	const scaledX = x / MAP_SCALE_X;
+	const scaledY = y / MAP_SCALE_Y;
+	const left = Math.floor(scaledX);
+	const right = left + 1;
 
 	return {
-		x: x / MAP_SCALE_X,
-		y: y / MAP_SCALE_Y,
+		x: scaledX,
+		y: scaledY,
+		left,
+		right,
 	};
 }
 
 export function toWorldCoords(particle) {
-	const { x, y } = particle;
+	const { x, y, left, right } = particle;
 
 	return {
 		x: x * MAP_SCALE_X,
 		y: y * MAP_SCALE_Y,
+		left: left * MAP_SCALE_X,
+		right: right * MAP_SCALE_X,
 	};
 }
 

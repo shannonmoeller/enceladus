@@ -24,7 +24,7 @@ defineElement('enc-editor', (el) => {
 		}
 
 		event.preventDefault();
-		editor.add(event.offsetX, event.offsetY);
+		editor.add();
 	}
 
 	function handleRightClick(event) {
@@ -34,7 +34,7 @@ defineElement('enc-editor', (el) => {
 		}
 
 		event.preventDefault();
-		editor.remove(event.offsetX, event.offsetY);
+		editor.remove();
 	}
 
 	function handlePointerDown() {
@@ -46,6 +46,9 @@ defineElement('enc-editor', (el) => {
 	}
 
 	function handlePointerMove(event) {
+		editor.pointer.x = event.offsetX;
+		editor.pointer.y = event.offsetY;
+
 		if (isDown) {
 			isDragging = true;
 			editor.camera.x -= event.movementX / editor.camera.z;

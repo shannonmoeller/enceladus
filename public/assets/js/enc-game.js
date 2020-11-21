@@ -3,7 +3,6 @@
  */
 
 import { defineElement, refs } from './vendor/dhtml.js';
-import { createContext } from './vendor/game.js';
 import { createGame } from './game.js';
 import { route } from './state.js';
 
@@ -20,8 +19,7 @@ const KEYS = {
 
 defineElement('enc-game', (el) => {
 	const { canvasEl, leftEl, rightEl, backEl } = refs(el);
-	const ctx = createContext(canvasEl);
-	const game = createGame(ctx);
+	const game = createGame(canvasEl);
 
 	route.subscribe(
 		(state) => {

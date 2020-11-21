@@ -10,9 +10,35 @@ function isDebugging() {
 	return location.hash === '#debug';
 }
 
+// mulberry32
+// https://stackoverflow.com/a/47593316
+export function nextRandom(t) {
+	t = Math.imul(t ^ (t >>> 15), t | 1);
+	t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+	t = ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+
+	return t;
+}
+
+export function renderSilt(ctx, viewport) {
+	ctx.save();
+	ctx.fillStyle = 'hsl(0 0% 0% / 60%)';
+
+	const left = Math.floor(viewport.left);
+	const right = Math.floor(viewport.right);
+
+	for (let x = left; x < right; x++) {
+		let y = nextRandom(x) * 2000;
+
+		ctx.fillRect(x, y, 1, 1);
+	}
+
+	ctx.restore();
+}
+
 export function renderGas(ctx, path) {
 	ctx.save();
-	ctx.fillStyle = 'hsl(162 100% 50% / 20%)';
+	ctx.fillStyle = 'hsl(162 100% 40% / 20%)';
 	ctx.fill(path);
 	ctx.restore();
 }
@@ -28,7 +54,9 @@ export function renderPlayer(ctx, player) {
 	ctx.save();
 	ctx.beginPath();
 	ctx.arc(player.x, player.y, 5, 0, TAU);
-	ctx.closePath();
+	ctx.globalCompositeOperation = 'screen';
+	ctx.shadowColor = 'white';
+	ctx.shadowBlur = 30;
 	ctx.fillStyle = 'white';
 	ctx.fill();
 	ctx.restore();
@@ -36,11 +64,12 @@ export function renderPlayer(ctx, player) {
 
 export function renderMeter(ctx, player) {
 	ctx.save();
+	ctx.globalCompositeOperation = 'screen';
 
 	ctx.beginPath();
 	ctx.arc(player.x, player.y, 10, TAU * 0.333, TAU * 0.666);
-	ctx.strokeStyle = 'hsl(0 0% 100% / 50%)';
-	ctx.lineWidth = 3;
+	ctx.strokeStyle = 'hsl(0 0% 100% / 20%)';
+	ctx.lineWidth = 2.5;
 	ctx.stroke();
 
 	ctx.beginPath();

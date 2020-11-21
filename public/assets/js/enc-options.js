@@ -3,10 +3,10 @@
  */
 
 import { defineElement, refs } from './vendor/dhtml.js';
-import { route, volume, quality, bloom } from './state.js';
+import { route, volume, quality } from './state.js';
 
 defineElement('enc-options', (el) => {
-	const { volumeEl, qualityEl, bloomEl, backEl } = refs(el);
+	const { volumeEl, qualityEl, backEl } = refs(el);
 
 	volumeEl.value = volume.get();
 	volumeEl.onchange = () => {
@@ -16,11 +16,6 @@ defineElement('enc-options', (el) => {
 	qualityEl.value = quality.get();
 	qualityEl.onchange = () => {
 		quality.set(Number(qualityEl.value));
-	};
-
-	bloomEl.checked = bloom.get();
-	bloomEl.onchange = () => {
-		bloom.set(bloomEl.checked);
 	};
 
 	backEl.onclick = () => {
