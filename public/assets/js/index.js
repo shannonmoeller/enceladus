@@ -9,9 +9,10 @@ import './enc-menu.js';
 import './enc-options.js';
 
 console.log(`
-# Welcome Traveler!
+Well, hello there. Looking to cheat? Cool.
+Let me save you some time. Try:
 
-Looking to cheat? Neat. Try: game.goTo(3600);
+  game.goTo(3600);
 
 https://github.com/shannonmoeller/enceladus
 

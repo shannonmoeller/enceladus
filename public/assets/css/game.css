@@ -32,7 +32,8 @@
 	position: absolute;
 	top: env(safe-area-inset-top);
 	right: env(safe-area-inset-right);
-	padding: 15px;
+	padding: 20px;
+	cursor: pointer;
 	font-size: 0;
 }
 

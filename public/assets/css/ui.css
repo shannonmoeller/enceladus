@@ -27,6 +27,7 @@
 
 .ui-button {
 	margin-block-start: 0.25em;
+	cursor: pointer;
 	text-align: left;
 }
 
