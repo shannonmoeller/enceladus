@@ -75,7 +75,7 @@ export function createGame(main) {
 			console.log('x_x');
 
 			const x = player.respawn;
-			const y = map.getGasLevel(x);
+			const y = map.getGasLevel(x) + 2;
 
 			player.x = x;
 			player.x0 = x;

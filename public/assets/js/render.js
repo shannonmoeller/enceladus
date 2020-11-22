@@ -45,14 +45,14 @@ export function renderSilt(ctx, viewport) {
 export function renderGas(ctx, path) {
 	ctx.save();
 
-	ctx.fillStyle = 'hsl(162 50% 40% / 20%)';
+	ctx.fillStyle = 'hsl(162 50% 40% / 10%)';
 	ctx.fill(path);
 
-	ctx.strokeStyle = 'hsl(162 100% 40% / 20%)';
+	ctx.strokeStyle = 'hsl(162 100% 40% / 10%)';
 	ctx.stroke(path);
 
 	ctx.translate(0, -4);
-	ctx.fillStyle = 'hsl(162 100% 40% / 20%)';
+	ctx.fillStyle = 'hsl(162 100% 40% / 10%)';
 	ctx.fill(path);
 
 	ctx.restore();
@@ -77,7 +77,7 @@ export function renderPlayer(ctx, player) {
 	ctx.arc(player.x, player.y, 5, 0, TAU);
 	ctx.globalCompositeOperation = 'screen';
 	ctx.shadowColor = 'white';
-	ctx.shadowBlur = 30;
+	ctx.shadowBlur = 15;
 	ctx.fillStyle = 'white';
 	ctx.fill();
 	ctx.restore();
