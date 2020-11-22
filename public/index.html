@@ -30,6 +30,7 @@
 	<body>
 
 		<enc-route name="menu">
+			<div class="splash"></div>
 			<enc-menu class="ui">
 				<h1 class="ui-title">Enceladus</h1>
 				<ul class="ui-menu">
@@ -44,15 +45,15 @@
 		<enc-route name="options" hidden>
 			<enc-options class="ui">
 				<h2 class="ui-subtitle">Options</h2>
-				<ul class="ui-menu">
+				<ul class="ui-options">
 					<li>
-						<label>
+						<label class="ui-option">
 							Volume
 							<input type="range" ref="volumeEl" value="1" min="0" max="1" step="0.01" />
 						</label>
 					</li>
 					<li>
-						<label>
+						<label class="ui-option">
 							Quality
 							<input type="range" ref="qualityEl" value="1" min="0" max="1" step="0.01" />
 						</label>
@@ -65,8 +66,13 @@
 		<enc-route name="credits" hidden>
 			<enc-credits class="ui">
 				<h2 class="ui-subtitle">Credits</h2>
-				<p>Art and development by Shannon Moeller.</p>
-				<p>Special thanks to Diego Escalante and Matt Dunlap for feedback, testing, and encouragement.</p>
+				<dl class="ui-credits">
+					<dt>Art and development</dt>
+					<dd><a href="https://github.com/shannonmoeller">Shannon Moeller</a></dd>
+					<dt>Feedback, testing, and encouragement</dt>
+					<dd><a href="https://github.com/diego-escalante">Diego Escalante</a></dd>
+					<dd><a href="https://github.com/prestaul">Matt Dunlap</a></dd>
+				</dl>
 				<button class="ui-button" ref="backEl">Back</button>
 			</enc-credits>
 		</enc-route>

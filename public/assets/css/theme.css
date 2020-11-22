@@ -10,6 +10,15 @@
 	--primary-l: 50%;
 	--primary-hs: var(--primary-h) var(--primary-s);
 	--primary-hsl: var(--primary-hs) var(--primary-l);
+	--primary: hsl(var(--primary-hsl));
+
+	--accent-h: 210;
+	--accent-s: 100%;
+	--accent-l: 50%;
+	--accent-hs: var(--accent-h) var(--accent-s);
+	--accent-hsl: var(--accent-hs) var(--accent-l);
+	--accent: hsl(var(--accent-hsl));
+
 	--font-stack: 'Oxanium', 'Helvetica Neue', arial, sans-serif;
 
 	--transition-in: opacity 500ms ease-in, transform 500ms ease-in,

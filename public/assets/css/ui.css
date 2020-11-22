@@ -3,21 +3,63 @@
  */
 
 .ui {
-	display: block;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	position: absolute;
 	top: env(safe-area-inset-top, 0);
 	right: env(safe-area-inset-right, 0);
 	bottom: env(safe-area-inset-bottom, 0);
 	left: env(safe-area-inset-left, 0);
+	z-index: 1;
 	padding: 2.4em;
 	overflow: scroll;
 }
 
 .ui-title {
+	color: hsl(0 0% 100%);
 	font-size: 2em;
+}
+
+.ui-subtitle {
+	color: hsl(0 0% 100%);
+}
+
+.ui-button {
+	margin-block-start: 0.25em;
+	text-align: left;
 }
 
 .ui-button[disabled] {
 	cursor: not-allowed;
 	opacity: 0.3;
+}
+
+.ui-options {
+	margin: 0.5em 0;
+}
+
+.ui-option {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-block-start: 1em;
+	max-width: 200px;
+	color: hsl(0 0% 100%);
+	font-size: 0.5em;
+	letter-spacing: 0.25ch;
+	line-height: 1;
+	text-transform: uppercase;
+}
+
+.ui-credits {
+	margin: 0.5em 0;
+}
+
+.ui-credits dt {
+	margin-block-start: 1em;
+	color: hsl(0 0% 100%);
+	font-size: 0.5em;
+	letter-spacing: 0.25ch;
+	text-transform: uppercase;
 }
