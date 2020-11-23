@@ -8,7 +8,7 @@ import {
 	resizeContext,
 	createTickLoop,
 } from './vendor/game.js';
-import { notes, sustains } from '../data/lune.js';
+import { notes, pockets, currents } from '../data/lune.js';
 import { createMap, toMapCoords, toWorldCoords } from './map.js';
 
 export function createEditor(ctx) {
@@ -29,13 +29,16 @@ export function createEditor(ctx) {
 			clearContext(ctx);
 
 			const viewport = createViewport(ctx, camera);
-			const map = createMap({ notes, sustains });
+			const map = createMap({ notes, pockets, currents });
 			const pointerCoords = toPointerCoords();
 			const mapCoords = toMapCoords(pointerCoords);
 			const worldCoords = toWorldCoords(mapCoords);
 
 			ctx.fillStyle = 'hsl(162 100% 30%)';
 			ctx.fill(map.gasPath);
+
+			ctx.fillStyle = 'hsl(210 100% 30%)';
+			ctx.fill(map.towPath);
 
 			ctx.fillStyle = 'hsl(0 0% 0% / 50%)';
 			ctx.fill(map.icePath);
@@ -45,13 +48,21 @@ export function createEditor(ctx) {
 			ctx.fillStyle = 'hsl(0 0% 100% / 10%)';
 			ctx.fillRect(
 				worldCoords.left,
-				-1000,
+				0,
 				worldCoords.right - worldCoords.left,
-				3000
+				1584
 			);
 			ctx.restore();
 
 			viewport.restore();
+
+			ctx.fillStyle = 'hsl(0 0% 100%)';
+			ctx.fillText(
+				`w ${worldCoords.left},${Math.floor(worldCoords.y)}`,
+				20,
+				30
+			);
+			ctx.fillText(`m ${mapCoords.left},${Math.floor(mapCoords.y)}`, 20, 40);
 		},
 	});
 
@@ -65,14 +76,14 @@ export function createEditor(ctx) {
 			return;
 		}
 
-		sustains[floorX] = Math.max(0, floorY);
+		pockets[floorX] = Math.max(0, floorY);
 	}
 
 	function remove() {
 		const pointerCoords = toPointerCoords();
 		const mapCoords = toMapCoords(pointerCoords);
 
-		delete sustains[Math.floor(mapCoords.x)];
+		delete pockets[Math.floor(mapCoords.x)];
 	}
 
 	function resize() {
@@ -89,12 +100,12 @@ export function createEditor(ctx) {
 	}
 
 	function serialize() {
-		let data = 'export const sustains = [';
+		let data = 'export const pockets = [';
 		let line = '';
 
 		for (let i = 0; i < notes.length; i++) {
 			const value =
-				i in sustains ? `${sustains[i]},` : i === notes.length - 1 ? '0' : ',';
+				i in pockets ? `${pockets[i]},` : i === notes.length - 1 ? '0' : ',';
 
 			if (line.length + value.length > 78) {
 				data += `\n\t${line}`;

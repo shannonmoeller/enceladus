@@ -30,7 +30,6 @@ defineElement('enc-game', (el) => {
 	}
 
 	function handleKeyDown(event) {
-		console.log('down', el);
 		if (el.hidden) {
 			return;
 		}

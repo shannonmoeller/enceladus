@@ -38,6 +38,6 @@
 
 @media (orientation: portrait) {
 	.splash {
-		background-size: max(600px, 100%) auto;
+		background-size: auto, auto, auto, auto, auto 66%;
 	}
 }

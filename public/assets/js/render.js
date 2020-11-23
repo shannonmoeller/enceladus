@@ -20,9 +20,29 @@ export function nextRandom(t) {
 	return t;
 }
 
+export function renderDebug(ctx, player) {
+	if (!isDebugging()) {
+		return;
+	}
+
+	ctx.save();
+
+	const playerX = Math.round(player.x);
+	const playerY = Math.round(player.y);
+	const playerFuel = Math.round(player.fuel);
+	const mapX = Math.round(toMapCoords(player).x);
+	const mapY = Math.round(toMapCoords(player).y);
+
+	ctx.fillStyle = 'hsl(0 0% 100%)';
+	ctx.fillText(`w ${playerX},${playerY}`, 20, 30);
+	ctx.fillText(`m ${mapX},${mapY}`, 20, 40);
+	ctx.fillText(`${playerFuel}%`, 20, 50);
+
+	ctx.restore();
+}
+
 export function renderSilt(ctx, viewport) {
 	ctx.save();
-	ctx.fillStyle = 'hsl(162 100% 50% / 30%)';
 
 	const left = Math.floor(viewport.left);
 	const right = Math.floor(viewport.right);
@@ -36,6 +56,7 @@ export function renderSilt(ctx, viewport) {
 
 		ctx.beginPath();
 		ctx.arc(x, y, 0.5, 0, TAU);
+		ctx.fillStyle = 'hsl(162 100% 50% / 30%)';
 		ctx.fill();
 	}
 
@@ -71,18 +92,6 @@ export function renderIce(ctx, path) {
 	ctx.restore();
 }
 
-export function renderPlayer(ctx, player) {
-	ctx.save();
-	ctx.beginPath();
-	ctx.arc(player.x, player.y, 5, 0, TAU);
-	ctx.globalCompositeOperation = 'screen';
-	ctx.shadowColor = 'white';
-	ctx.shadowBlur = 15;
-	ctx.fillStyle = 'white';
-	ctx.fill();
-	ctx.restore();
-}
-
 export function renderMeter(ctx, player) {
 	ctx.save();
 	ctx.globalCompositeOperation = 'screen';
@@ -108,25 +117,27 @@ export function renderMeter(ctx, player) {
 	ctx.restore();
 }
 
-export function renderDebug(ctx, player, viewport) {
-	if (!isDebugging()) {
-		return;
+export function renderParticles(ctx, particles) {
+	ctx.save();
+
+	for (const { x, y } of particles) {
+		ctx.beginPath();
+		ctx.arc(x, y, 0.5, 0, TAU);
+		ctx.fillStyle = 'hsl(162 100% 50% / 30%)';
+		ctx.fill();
 	}
 
-	const playerX = Math.round(player.x);
-	const playerY = Math.round(player.y);
-	const playerFuel = Math.round(player.fuel);
-	const mapX = Math.round(toMapCoords(player).x);
-	const mapY = Math.round(toMapCoords(player).y);
+	ctx.restore();
+}
 
+export function renderPlayer(ctx, player) {
 	ctx.save();
-	ctx.fillStyle = 'hsl(0 0% 100% / 50%)';
-	ctx.fillText(
-		`w ${playerX},${playerY}`,
-		viewport.left + 20,
-		viewport.top + 30
-	);
-	ctx.fillText(`m ${mapX},${mapY}`, viewport.left + 20, viewport.top + 40);
-	ctx.fillText(`${playerFuel}%`, viewport.left + 20, viewport.top + 50);
+
+	ctx.beginPath();
+	ctx.arc(player.x, player.y, 5, 0, TAU);
+	ctx.globalCompositeOperation = 'screen';
+	ctx.fillStyle = 'white';
+	ctx.fill();
+
 	ctx.restore();
 }

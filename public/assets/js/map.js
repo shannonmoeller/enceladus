@@ -74,7 +74,7 @@ export function toWorldCoords(particle) {
 	};
 }
 
-export function createMap({ notes, sustains }) {
+export function createIce(notes) {
 	const ice = notes.map((y, x) => toWorldCoords({ x, y }));
 	const iceIndex = indexSparseArray(ice);
 	const icePath = new Path2D();
@@ -84,21 +84,6 @@ export function createMap({ notes, sustains }) {
 	ice.forEach((point) => icePath.lineTo(point.x, point.y));
 	icePath.lineTo(ice[ice.length - 1].x, -1000);
 	icePath.closePath();
-
-	const gas = sustains.map((y, x) => toWorldCoords({ x, y }));
-	const gasIndex = indexSparseArray(gas);
-	const gasPath = new Path2D();
-	let prev = { x: 0, y: 0 };
-
-	gasPath.moveTo(0, -1000);
-	gasPath.lineTo(0, gas[0].y);
-	gas.forEach((point) => {
-		gasPath.lineTo(point.x, prev.y);
-		prev = point;
-		gasPath.lineTo(point.x, prev.y);
-	});
-	gasPath.lineTo(gas[gas.length - 1].x, -1000);
-	gasPath.closePath();
 
 	function getIceWalls(x) {
 		const mapX = Math.floor(x / MAP_SCALE_X);
@@ -122,6 +107,30 @@ export function createMap({ notes, sustains }) {
 		return distance;
 	}
 
+	return {
+		ice,
+		icePath,
+		getIceWalls,
+		getDistanceToIceWalls,
+	};
+}
+
+export function createGas(pockets) {
+	const gas = pockets.map((y, x) => toWorldCoords({ x, y }));
+	const gasIndex = indexSparseArray(gas);
+	const gasPath = new Path2D();
+	let prev = { x: 0, y: 0 };
+
+	gasPath.moveTo(0, -1000);
+	gasPath.lineTo(0, gas[0].y);
+	gas.forEach((point) => {
+		gasPath.lineTo(point.x, prev.y);
+		prev = point;
+		gasPath.lineTo(point.x, prev.y);
+	});
+	gasPath.lineTo(gas[gas.length - 1].x, -1000);
+	gasPath.closePath();
+
 	function getGasLevel(x) {
 		const mapX = Math.floor(x / MAP_SCALE_X);
 
@@ -129,13 +138,50 @@ export function createMap({ notes, sustains }) {
 	}
 
 	return {
-		ice,
-		icePath,
-		getIceWalls,
-		getDistanceToIceWalls,
-
 		gas,
 		gasPath,
 		getGasLevel,
+	};
+}
+
+export function createTow(currents) {
+	const tow = currents.map(([y, fx, fy], x) => ({
+		...toWorldCoords({ x, y }),
+		fx,
+		fy,
+	}));
+
+	const towIndex = indexSparseArray(tow);
+	const towPath = new Path2D();
+	let prev = { x: 0, y: 0 };
+
+	towPath.moveTo(0, 2500);
+	towPath.lineTo(0, tow[0].y);
+	tow.forEach((point) => {
+		towPath.lineTo(point.x, prev.y);
+		prev = point;
+		towPath.lineTo(point.x, prev.y);
+	});
+	towPath.lineTo(tow[tow.length - 1].x, 2500);
+	towPath.closePath();
+
+	function getTowLevel(x) {
+		const mapX = Math.floor(x / MAP_SCALE_X);
+
+		return towIndex.findCurrent(mapX);
+	}
+
+	return {
+		tow,
+		towPath,
+		getTowLevel,
+	};
+}
+
+export function createMap({ notes, pockets, currents }) {
+	return {
+		...createIce(notes),
+		...createGas(pockets),
+		...createTow(currents),
 	};
 }

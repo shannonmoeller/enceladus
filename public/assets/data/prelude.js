@@ -43,6 +43,12 @@ export const notes = [
 	392,
 ];
 
-export const sustains = [];
-sustains[0] = 0;
-sustains[notes.length - 1] = 0;
+// prettier-ignore
+export const pockets = [];
+pockets[0] = 0;
+pockets[notes.length - 1] = 0;
+
+// prettier-ignore
+export const currents = [];
+currents[0] = 0;
+currents[notes.length - 1] = 0;

@@ -12,7 +12,7 @@ console.log(`
 Well, hello there. Looking to cheat? Cool.
 Let me save you some time. Try:
 
-  game.goTo(3600);
+  game.goTo(20000);
 
 https://github.com/shannonmoeller/enceladus
 
