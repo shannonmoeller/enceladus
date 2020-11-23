@@ -29,8 +29,7 @@
 	</head>
 	<body>
 
-		<enc-route name="menu">
-			<div class="splash"></div>
+		<enc-route class="splash" name="menu">
 			<enc-menu class="ui">
 				<h1 class="ui-title">Enceladus</h1>
 				<ul class="ui-menu">
@@ -49,13 +48,13 @@
 					<li>
 						<label class="ui-option">
 							Volume
-							<input type="range" ref="volumeEl" value="1" min="0" max="1" step="0.01" />
+							<input type="range" ref="volumeEl" value="1" min="0" max="1" step="0.05" />
 						</label>
 					</li>
 					<li>
 						<label class="ui-option">
 							Quality
-							<input type="range" ref="qualityEl" value="1" min="0" max="1" step="0.01" />
+							<input type="range" ref="qualityEl" value="1" min="0.1" max="1" step="0.05" />
 						</label>
 					</li>
 				</ul>
@@ -68,10 +67,10 @@
 				<h2 class="ui-subtitle">Credits</h2>
 				<dl class="ui-credits">
 					<dt>Art and development</dt>
-					<dd><a href="https://github.com/shannonmoeller">Shannon Moeller</a></dd>
+					<dd><a class="ui-button" href="https://github.com/shannonmoeller">Shannon Moeller</a></dd>
 					<dt>Feedback, testing, and encouragement</dt>
-					<dd><a href="https://github.com/diego-escalante">Diego Escalante</a></dd>
-					<dd><a href="https://github.com/prestaul">Matt Dunlap</a></dd>
+					<dd><a class="ui-button" href="https://github.com/diego-escalante">Diego Escalante</a></dd>
+					<dd><a class="ui-button" href="https://github.com/prestaul">Matt Dunlap</a></dd>
 				</dl>
 				<button class="ui-button" ref="backEl">Back</button>
 			</enc-credits>

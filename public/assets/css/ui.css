@@ -27,6 +27,10 @@
 
 .ui-button {
 	margin-block-start: 0.25em;
+	margin-inline-start: -11px;
+	padding-inline-start: 10px;
+	border-inline-start: 1px solid transparent;
+	line-height: 1;
 	cursor: pointer;
 	text-align: left;
 }
@@ -34,6 +38,11 @@
 .ui-button[disabled] {
 	cursor: not-allowed;
 	opacity: 0.3;
+}
+
+.ui-button:hover,
+.ui-button:focus-visible {
+	border-color: var(--primary);
 }
 
 .ui-options {

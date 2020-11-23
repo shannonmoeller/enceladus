@@ -21,17 +21,6 @@ defineElement('enc-game', (el) => {
 	const { canvasEl, leftEl, rightEl, backEl } = refs(el);
 	const game = createGame(canvasEl);
 
-	route.subscribe(
-		(state) => {
-			if (state === 'game') {
-				game.start();
-			} else {
-				game.stop();
-			}
-		},
-		{ immediate: true }
-	);
-
 	function unhandle(event) {
 		event.preventDefault();
 	}
@@ -41,6 +30,11 @@ defineElement('enc-game', (el) => {
 	}
 
 	function handleKeyDown(event) {
+		console.log('down', el);
+		if (el.hidden) {
+			return;
+		}
+
 		if (event.key in KEYS) {
 			event.preventDefault();
 			game.controller[KEYS[event.key]] = true;
@@ -48,6 +42,10 @@ defineElement('enc-game', (el) => {
 	}
 
 	function handleKeyUp(event) {
+		if (el.hidden) {
+			return;
+		}
+
 		if (event.key === 'Escape') {
 			return handleBack(event);
 		}
@@ -83,11 +81,6 @@ defineElement('enc-game', (el) => {
 		route.set('menu');
 	}
 
-	visualViewport.addEventListener('resize', handleResize, { passive: true });
-
-	document.addEventListener('keydown', handleKeyDown);
-	document.addEventListener('keyup', handleKeyUp);
-
 	leftEl.addEventListener('click', unhandle);
 	leftEl.addEventListener('contextmenu', unhandle);
 	leftEl.addEventListener('touchstart', unhandle);
@@ -101,6 +94,24 @@ defineElement('enc-game', (el) => {
 	rightEl.addEventListener('pointerup', handleRightUp);
 
 	backEl.addEventListener('click', handleBack);
+
+	route.subscribe((state) => {
+		if (state === 'game') {
+			visualViewport.addEventListener('resize', handleResize, {
+				passive: true,
+			});
+			document.addEventListener('keydown', handleKeyDown);
+			document.addEventListener('keyup', handleKeyUp);
+			game.start();
+		} else {
+			visualViewport.removeEventListener('resize', handleResize, {
+				passive: true,
+			});
+			document.removeEventListener('keydown', handleKeyDown);
+			document.removeEventListener('keyup', handleKeyUp);
+			game.stop();
+		}
+	});
 
 	window.game = game;
 });
