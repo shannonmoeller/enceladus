@@ -81,6 +81,16 @@
 		<enc-route name="game" hidden>
 			<enc-game class="game">
 				<canvas class="game-canvas" ref="canvasEl"></canvas>
+
+				<dl class="game-stats">
+					<dt class="game-time">Time</dt>
+					<dd ref="timeEl"></dd>
+					<dt class="game-distance">Distance</dt>
+					<dd ref="distanceEl"></dd>
+					<dt class="game-deaths">Deaths</dt>
+					<dd ref="deathsEl"></dd>
+				</dl>
+
 				<button class="game-left" ref="leftEl">Left</button>
 				<button class="game-right" ref="rightEl">Right</button>
 				<button class="game-pause" ref="backEl">Pause</button>

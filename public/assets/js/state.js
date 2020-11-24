@@ -31,6 +31,11 @@ function createPersistentStore(key, value) {
 }
 
 export const route = createStore('menu');
-export const slot1 = createPersistentStore('slot1', null);
-export const volume = createPersistentStore('volume', 1);
+
 export const quality = createPersistentStore('quality', 1);
+export const volume = createPersistentStore('volume', 1);
+
+export const deaths = createPersistentStore('deaths', null);
+export const distance = createPersistentStore('distance', null);
+export const checkpoint = createPersistentStore('checkpoint', null);
+export const time = createPersistentStore('time', null);

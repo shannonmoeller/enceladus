@@ -3,12 +3,13 @@
  */
 
 import { defineElement, refs } from './vendor/dhtml.js';
-import { route, slot1 } from './state.js';
+import { route, checkpoint, deaths, distance, time } from './state.js';
+import { START_X } from './constants.js';
 
 defineElement('enc-menu', (el) => {
 	const { continueEl, newEl, optionsEl, creditsEl } = refs(el);
 
-	slot1.subscribe(
+	distance.subscribe(
 		(state) => {
 			continueEl.disabled = state == null;
 		},
@@ -20,7 +21,10 @@ defineElement('enc-menu', (el) => {
 	};
 
 	newEl.onclick = () => {
-		slot1.set(1440);
+		deaths.set(0);
+		checkpoint.set(START_X);
+		distance.set(START_X);
+		time.set(0);
 		route.set('game');
 	};
 

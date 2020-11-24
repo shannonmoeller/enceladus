@@ -3,8 +3,8 @@
  */
 
 import { toMapCoords } from './map.js';
+import { TAU } from './constants.js';
 
-const TAU = Math.PI * 2;
 const herschel = new Image();
 
 herschel.src = '/assets/img/herschel.png';
@@ -114,7 +114,7 @@ export function renderMeter(ctx, player) {
 		TAU * 0.333,
 		TAU * 0.333 + TAU * 0.333 * (player.fuel / 100)
 	);
-	ctx.strokeStyle = 'hsl(0 0% 100%)';
+	ctx.strokeStyle = 'hsl(162 100% 50%)';
 	ctx.lineWidth = 3;
 	ctx.stroke();
 

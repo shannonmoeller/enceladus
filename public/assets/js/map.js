@@ -3,9 +3,7 @@
  */
 
 import { getDistance, findClosest } from './vendor/game.js';
-
-const MAP_SCALE_X = 16;
-const MAP_SCALE_Y = 0.66;
+import { MAP_SCALE_X, MAP_SCALE_Y } from './constants.js';
 
 function indexSparseArray(list) {
 	const { length } = list;

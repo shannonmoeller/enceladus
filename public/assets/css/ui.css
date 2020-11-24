@@ -67,9 +67,12 @@
 }
 
 .ui-credits dt {
-	margin-block-start: 1em;
 	color: hsl(0 0% 100%);
 	font-size: 0.5em;
 	letter-spacing: 0.25ch;
 	text-transform: uppercase;
+}
+
+.ui-credits dd + dt {
+	margin-block-start: 1em;
 }

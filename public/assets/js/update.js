@@ -3,14 +3,17 @@
  */
 
 import { constrainChain } from './vendor/game.js';
-import { slot1 } from './state.js';
+import { checkpoint, deaths, distance, time } from './state.js';
 
-const BOBBING_DRAG = 0.9895;
-const GAS_DRAG = 0.999;
-const GAS_GRAVITY = 0.04;
-const WATER_BOUYANCY = 0.06;
-const WATER_DRAG = 0.98;
-const RELAX = 3;
+import {
+	PLAYER_RADIUS,
+	RELAX,
+	BOBBING_DRAG,
+	GAS_DRAG,
+	GAS_GRAVITY,
+	WATER_BOUYANCY,
+	WATER_DRAG,
+} from './constants.js';
 
 export function updateCamera(player, link, camera) {
 	for (let i = RELAX; i--; ) {
@@ -34,14 +37,14 @@ export function updatePlayer(map, controller, player) {
 	const { left, right } = controller;
 
 	const distanceFromWall = map.getDistanceToIceWalls(player);
-	const isDead = distanceFromWall < 5;
-	const isMostlyDead = distanceFromWall < 10;
+	const isDead = distanceFromWall < PLAYER_RADIUS;
+	const isMostlyDead = distanceFromWall < PLAYER_RADIUS * 1.5;
 
 	if (isDead) {
-		console.log('x_x');
+		deaths.set((x) => x + 1);
 
-		const x = player.respawn;
-		const y = map.getGasLevel(x) + 2;
+		const x = checkpoint.get();
+		const y = map.getGasLevel(x);
 
 		player.x = x;
 		player.x0 = x;
@@ -65,9 +68,10 @@ export function updatePlayer(map, controller, player) {
 
 	const gasLevel = map.getGasLevel(x);
 	const isInGas = y < gasLevel;
-	const isNearGas = y < gasLevel + 10;
-	const isNearWater = y > gasLevel - 15;
-	const isBobbing = isNearGas && isNearWater && vy < 0.4;
+	const isNearGas = y < gasLevel + PLAYER_RADIUS * 2;
+	const isNearWater = y > gasLevel - PLAYER_RADIUS * 3;
+	const isSlow = vy < 0.4;
+	const isBobbing = isNearGas && isNearWater && isSlow;
 
 	const towLevel = map.getTowLevel(x);
 	const isInTow = y > towLevel.y;
@@ -122,13 +126,18 @@ export function updatePlayer(map, controller, player) {
 	}
 
 	if (!isMostlyDead && isBobbing && fuel > 80) {
-		player.respawn = x;
-		slot1.set(x);
+		checkpoint.set(x);
 	}
+
+	distance.set(x);
 
 	player.x = Math.max(0, x + vx);
 	player.x0 = x;
 	player.y = Math.max(0, y + vy);
 	player.y0 = y;
 	player.fuel = Math.max(0, Math.min(100, fuel));
+}
+
+export function updateTime(delta) {
+	time.set((x) => x + delta);
 }

@@ -4,7 +4,14 @@
 
 import { defineElement, refs } from './vendor/dhtml.js';
 import { createGame } from './game.js';
-import { route } from './state.js';
+import { route, deaths, distance, time } from './state.js';
+import {
+	HOURS,
+	MINUTES,
+	SECONDS,
+	PLAYER_RADIUS,
+	START_X,
+} from './constants.js';
 
 const KEYS = {
 	ArrowUp: 'up',
@@ -17,8 +24,35 @@ const KEYS = {
 	d: 'right',
 };
 
+function formatDistance(x) {
+	const km = (x - START_X) / (PLAYER_RADIUS * 2) / 1000;
+
+	return `${km.toFixed(2)}km`;
+}
+
+function formatTime(ms) {
+	let hours = Math.floor((ms / HOURS) % 24);
+	let minutes = Math.floor((ms / MINUTES) % 60);
+	let seconds = Math.floor((ms / SECONDS) % 60);
+
+	hours = String(hours).padStart(2, '0');
+	minutes = String(minutes).padStart(2, '0');
+	seconds = String(seconds).padStart(2, '0');
+
+	return `${hours}:${minutes}:${seconds}`;
+}
+
 defineElement('enc-game', (el) => {
-	const { canvasEl, leftEl, rightEl, backEl } = refs(el);
+	const {
+		canvasEl,
+		leftEl,
+		rightEl,
+		deathsEl,
+		distanceEl,
+		timeEl,
+		backEl,
+	} = refs(el);
+
 	const game = createGame(canvasEl);
 
 	function unhandle(event) {
@@ -111,6 +145,27 @@ defineElement('enc-game', (el) => {
 			game.stop();
 		}
 	});
+
+	deaths.subscribe(
+		(state) => {
+			deathsEl.textContent = state;
+		},
+		{ immediate: true }
+	);
+
+	distance.subscribe(
+		(state) => {
+			distanceEl.textContent = formatDistance(state);
+		},
+		{ immediate: true }
+	);
+
+	time.subscribe(
+		(state) => {
+			timeEl.textContent = formatTime(state);
+		},
+		{ immediate: true }
+	);
 
 	window.game = game;
 });

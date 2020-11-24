@@ -20,8 +20,13 @@ import {
 	renderPlayer,
 	renderSilt,
 } from './render.js';
-import { updateCamera, updateParticles, updatePlayer } from './update.js';
-import { slot1, quality } from './state.js';
+import {
+	updateCamera,
+	updateParticles,
+	updatePlayer,
+	updateTime,
+} from './update.js';
+import { checkpoint, quality } from './state.js';
 
 export function createGame(main) {
 	const ctx = createContext(main);
@@ -61,10 +66,11 @@ export function createGame(main) {
 	};
 
 	const loop = createTickLoop({
-		update() {
+		update({ delta }) {
 			updatePlayer(map, controller, player);
 			updateParticles(map, particles);
 			updateCamera(player, link, camera);
+			updateTime(delta);
 		},
 
 		render() {
@@ -107,7 +113,7 @@ export function createGame(main) {
 
 	function start() {
 		resize();
-		goTo(slot1.get());
+		goTo(checkpoint.get());
 		loop.start();
 	}
 

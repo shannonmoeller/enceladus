@@ -49,3 +49,21 @@
 .game-pause::after {
 	margin-inline-start: 4px;
 }
+
+.game-stats {
+	position: absolute;
+	top: env(safe-area-inset-top);
+	left: env(safe-area-inset-left);
+	padding: 20px;
+}
+
+.game-stats dt {
+	color: hsl(0 0% 100%);
+	font-size: 0.5em;
+	letter-spacing: 0.25ch;
+	text-transform: uppercase;
+}
+
+.game-stats dd + dt {
+	margin-block-start: 1em;
+}
