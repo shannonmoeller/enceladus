@@ -5,6 +5,9 @@
 import { toMapCoords } from './map.js';
 
 const TAU = Math.PI * 2;
+const herschel = new Image();
+
+herschel.src = '/assets/img/herschel.png';
 
 function isDebugging() {
 	return location.hash === '#debug';
@@ -94,18 +97,19 @@ export function renderIce(ctx, path) {
 
 export function renderMeter(ctx, player) {
 	ctx.save();
+	ctx.translate(player.x, player.y);
 	ctx.globalCompositeOperation = 'screen';
 
 	ctx.beginPath();
-	ctx.arc(player.x, player.y, 10, TAU * 0.333, TAU * 0.666);
+	ctx.arc(0, 0, 10, TAU * 0.333, TAU * 0.666);
 	ctx.strokeStyle = 'hsl(0 0% 100% / 20%)';
 	ctx.lineWidth = 2;
 	ctx.stroke();
 
 	ctx.beginPath();
 	ctx.arc(
-		player.x,
-		player.y,
+		0,
+		0,
 		10,
 		TAU * 0.333,
 		TAU * 0.333 + TAU * 0.333 * (player.fuel / 100)
@@ -133,11 +137,9 @@ export function renderParticles(ctx, particles) {
 export function renderPlayer(ctx, player) {
 	ctx.save();
 
-	ctx.beginPath();
-	ctx.arc(player.x, player.y, 5, 0, TAU);
-	ctx.globalCompositeOperation = 'screen';
-	ctx.fillStyle = 'white';
-	ctx.fill();
+	ctx.translate(player.x, player.y);
+	ctx.rotate(TAU * (player.x - player.x0) * 0.05);
+	ctx.drawImage(herschel, -7, -7.5, 15, 15);
 
 	ctx.restore();
 }

@@ -41,7 +41,7 @@ export function updatePlayer(map, controller, player) {
 		console.log('x_x');
 
 		const x = player.respawn;
-		const y = map.getGasLevel(x) + 4;
+		const y = map.getGasLevel(x) + 2;
 
 		player.x = x;
 		player.x0 = x;
