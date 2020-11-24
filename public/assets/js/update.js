@@ -38,7 +38,7 @@ export function updatePlayer(map, controller, player) {
 
 	const distanceFromWall = map.getDistanceToIceWalls(player);
 	const isDead = distanceFromWall < PLAYER_RADIUS;
-	const isMostlyDead = distanceFromWall < PLAYER_RADIUS * 1.5;
+	const isMostlyDead = distanceFromWall < PLAYER_RADIUS * 2;
 
 	if (isDead) {
 		deaths.set((x) => x + 1);
