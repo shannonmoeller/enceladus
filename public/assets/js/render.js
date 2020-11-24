@@ -101,7 +101,7 @@ export function renderMeter(ctx, player) {
 	ctx.globalCompositeOperation = 'screen';
 
 	ctx.beginPath();
-	ctx.arc(0, 0, 10, TAU * 0.333, TAU * 0.666);
+	ctx.arc(0, 0, 12, TAU * 0.333, TAU * 0.666);
 	ctx.strokeStyle = 'hsl(0 0% 100% / 20%)';
 	ctx.lineWidth = 2;
 	ctx.stroke();
@@ -110,7 +110,7 @@ export function renderMeter(ctx, player) {
 	ctx.arc(
 		0,
 		0,
-		10,
+		12,
 		TAU * 0.333,
 		TAU * 0.333 + TAU * 0.333 * (player.fuel / 100)
 	);
