@@ -37,9 +37,9 @@ export function renderDebug(ctx, player) {
 	const mapY = Math.round(toMapCoords(player).y);
 
 	ctx.fillStyle = 'hsl(0 0% 100%)';
-	ctx.fillText(`w ${playerX},${playerY}`, 20, 30);
-	ctx.fillText(`m ${mapX},${mapY}`, 20, 40);
-	ctx.fillText(`${playerFuel}%`, 20, 50);
+	ctx.fillText(`w ${playerX},${playerY}`, 20, 200);
+	ctx.fillText(`m ${mapX},${mapY}`, 20, 210);
+	ctx.fillText(`${playerFuel}%`, 20, 220);
 
 	ctx.restore();
 }
@@ -100,20 +100,18 @@ export function renderMeter(ctx, player) {
 	ctx.translate(player.x, player.y);
 	ctx.globalCompositeOperation = 'screen';
 
+	const empty = TAU * 0.333;
+	const full = TAU * 0.666;
+	const current = empty + (full - empty) * (player.fuel / 100);
+
 	ctx.beginPath();
-	ctx.arc(0, 0, 12, TAU * 0.333, TAU * 0.666);
+	ctx.arc(0, 0, 12, empty, full);
 	ctx.strokeStyle = 'hsl(0 0% 100% / 20%)';
 	ctx.lineWidth = 2;
 	ctx.stroke();
 
 	ctx.beginPath();
-	ctx.arc(
-		0,
-		0,
-		12,
-		TAU * 0.333,
-		TAU * 0.333 + TAU * 0.333 * (player.fuel / 100)
-	);
+	ctx.arc(0, 0, 12, empty, Math.min(current, full));
 	ctx.strokeStyle = 'hsl(162 100% 50%)';
 	ctx.lineWidth = 3;
 	ctx.stroke();
@@ -136,10 +134,10 @@ export function renderParticles(ctx, particles) {
 
 export function renderPlayer(ctx, player) {
 	ctx.save();
-
 	ctx.translate(player.x, player.y);
+
 	ctx.rotate(TAU * (player.x - player.x0) * 0.05);
-	ctx.drawImage(herschel, -7, -7.5, 15, 15);
+	ctx.drawImage(herschel, -7.5, -7.5, 15, 15);
 
 	ctx.restore();
 }

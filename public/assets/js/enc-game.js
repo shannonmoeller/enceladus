@@ -25,7 +25,7 @@ const KEYS = {
 };
 
 function formatDistance(x) {
-	const km = (x - START_X) / (PLAYER_RADIUS * 2) / 1000;
+	const km = (x - START_X) / PLAYER_RADIUS / 1000;
 
 	return `${km.toFixed(2)}km`;
 }
@@ -42,6 +42,10 @@ function formatTime(ms) {
 	return `${hours}:${minutes}:${seconds}`;
 }
 
+function unhandle(event) {
+	event.preventDefault();
+}
+
 defineElement('enc-game', (el) => {
 	const {
 		canvasEl,
@@ -54,10 +58,6 @@ defineElement('enc-game', (el) => {
 	} = refs(el);
 
 	const game = createGame(canvasEl);
-
-	function unhandle(event) {
-		event.preventDefault();
-	}
 
 	function handleResize() {
 		game.resize();
@@ -137,12 +137,12 @@ defineElement('enc-game', (el) => {
 			document.addEventListener('keyup', handleKeyUp);
 			game.start();
 		} else {
+			game.stop();
 			visualViewport.removeEventListener('resize', handleResize, {
 				passive: true,
 			});
 			document.removeEventListener('keydown', handleKeyDown);
 			document.removeEventListener('keyup', handleKeyUp);
-			game.stop();
 		}
 	});
 

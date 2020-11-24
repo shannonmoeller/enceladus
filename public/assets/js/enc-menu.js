@@ -17,6 +17,7 @@ defineElement('enc-menu', (el) => {
 	);
 
 	continueEl.onclick = () => {
+		distance.set(checkpoint.get());
 		route.set('game');
 	};
 
