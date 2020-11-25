@@ -136,8 +136,9 @@ export function renderParticles(ctx, map, particles) {
 	for (const particle of particles) {
 		const { x, y } = particle;
 		const gasLevel = map.getGasLevel(x);
+		const towLevel = map.getTowLevel(x);
 
-		if (y < gasLevel + 5) {
+		if (y < gasLevel + 5 || y < towLevel.y) {
 			continue;
 		}
 

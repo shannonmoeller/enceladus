@@ -42,7 +42,7 @@ export function updateCamera(player, link, camera) {
 export function updateParticles(map, camera, particles, now) {
 	const top = camera.y - 300;
 	const bottom = camera.y + 300;
-	const left = Math.floor(camera.x - 300);
+	const left = Math.floor(camera.x - 500);
 	const right = Math.ceil(camera.x + 500);
 
 	for (let x = left; x < right; x++) {
