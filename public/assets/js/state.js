@@ -20,7 +20,7 @@ function setStorage(key, value) {
 	}
 }
 
-function createPersistentStore(key, value) {
+export function createPersistentStore(key, value) {
 	const store = createStore(getStorage(key) ?? value);
 
 	store.subscribe((state) => {

@@ -50,8 +50,6 @@ export function createGame(main) {
 		respawn: 1440,
 	};
 
-	const particles = [];
-
 	const link = {
 		x: player.x,
 		y: player.y,
@@ -65,10 +63,12 @@ export function createGame(main) {
 		mass: 1,
 	};
 
+	const particles = [];
+
 	const loop = createTickLoop({
-		update({ delta }) {
+		update({ now, delta }) {
 			updatePlayer(map, controller, player);
-			updateParticles(map, particles);
+			updateParticles(map, camera, particles, now);
 			updateCamera(player, link, camera);
 			updateTime(delta);
 		},
@@ -83,8 +83,8 @@ export function createGame(main) {
 			});
 
 			renderGas(ctx, map.gasPath);
-			renderSilt(ctx, viewport);
-			renderParticles(ctx, particles);
+			renderSilt(ctx, map, viewport);
+			renderParticles(ctx, map, particles);
 			renderIce(ctx, map.icePath);
 			renderPlayer(ctx, player);
 			renderMeter(ctx, player);
@@ -129,6 +129,7 @@ export function createGame(main) {
 		loop,
 		map,
 		player,
+		particles,
 
 		goTo,
 		resize,

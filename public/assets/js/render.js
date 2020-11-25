@@ -44,16 +44,23 @@ export function renderDebug(ctx, player) {
 	ctx.restore();
 }
 
-export function renderSilt(ctx, viewport) {
+export function renderSilt(ctx, map, viewport) {
 	ctx.save();
 
 	const left = Math.floor(viewport.left);
-	const right = Math.floor(viewport.right);
+	const right = Math.ceil(viewport.right);
 
 	for (let x = left; x < right; x++) {
-		let y = nextRandom(x) * 2000;
-
 		if (x % 3) {
+			continue;
+		}
+
+		let y = nextRandom(x) * 1500;
+
+		const towLevel = map.getTowLevel(x);
+		const isInTow = y > towLevel.y;
+
+		if (isInTow) {
 			continue;
 		}
 
@@ -119,13 +126,19 @@ export function renderMeter(ctx, player) {
 	ctx.restore();
 }
 
-export function renderParticles(ctx, particles) {
+export function renderParticles(ctx, map, particles) {
 	ctx.save();
 
-	for (const { x, y } of particles) {
+	for (const particle of particles) {
+		const { x, y } = particle;
+
+		if (y < map.getGasLevel(x) + 10) {
+			continue;
+		}
+
 		ctx.beginPath();
 		ctx.arc(x, y, 0.5, 0, TAU);
-		ctx.fillStyle = 'hsl(162 100% 50% / 30%)';
+		ctx.fillStyle = 'hsl(162 100% 50% / 70%)';
 		ctx.fill();
 	}
 
@@ -136,7 +149,7 @@ export function renderPlayer(ctx, player) {
 	ctx.save();
 	ctx.translate(player.x, player.y);
 
-	ctx.rotate(TAU * (player.x - player.x0) * 0.05);
+	ctx.rotate(TAU * (player.x - player.x0) * 0.04);
 	ctx.drawImage(herschel, -7.5, -7.5, 15, 15);
 
 	ctx.restore();

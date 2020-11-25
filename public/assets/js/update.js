@@ -15,6 +15,16 @@ import {
 	WATER_DRAG,
 } from './constants.js';
 
+// mulberry32
+// https://stackoverflow.com/a/47593316
+export function nextRandom(t) {
+	t = Math.imul(t ^ (t >>> 15), t | 1);
+	t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+	t = ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+
+	return t;
+}
+
 export function updateCamera(player, link, camera) {
 	for (let i = RELAX; i--; ) {
 		constrainChain(player, link, {
@@ -29,8 +39,62 @@ export function updateCamera(player, link, camera) {
 	}
 }
 
-export function updateParticles(map, particles) {
-	// TODO: particles
+export function updateParticles(map, camera, particles, now) {
+	const left = Math.floor(camera.x - 300);
+	const right = Math.ceil(camera.x + 500);
+
+	for (let x = left; x < right; x++) {
+		if (x % 3) {
+			continue;
+		}
+
+		let rand = nextRandom(x);
+		let y = rand * 1500;
+
+		if (Math.floor(rand * now) % 100) {
+			continue;
+		}
+
+		const towLevel = map.getTowLevel(x);
+		const isInTow = y > towLevel.y;
+
+		if (!isInTow) {
+			continue;
+		}
+
+		particles.push({
+			x: x + towLevel.fx,
+			x0: x,
+			y: y + towLevel.fy,
+			y0: y,
+		});
+	}
+
+	particles.splice(0, particles.length - 128);
+
+	for (const particle of particles) {
+		let { x, x0, y, y0 } = particle;
+		let vx = x - x0;
+		let vy = y - y0;
+
+		const towLevel = map.getTowLevel(x);
+		const isInTow = y > towLevel.y;
+
+		vy -= WATER_BOUYANCY * 0.1;
+
+		if (isInTow) {
+			vx += towLevel.fx;
+			vy += towLevel.fy;
+		}
+
+		vx *= WATER_DRAG;
+		vy *= WATER_DRAG;
+
+		particle.x += vx;
+		particle.x0 = x;
+		particle.y += vy;
+		particle.y0 = y;
+	}
 }
 
 export function updatePlayer(map, controller, player) {
@@ -62,7 +126,7 @@ export function updatePlayer(map, controller, player) {
 
 	player.died = false;
 
-	let { fuel, x, x0, y, y0 } = player;
+	let { x, x0, y, y0, fuel } = player;
 	let vx = x - x0;
 	let vy = y - y0;
 

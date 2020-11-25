@@ -10,6 +10,7 @@ defineElement('enc-editor', (el) => {
 	const { canvasEl } = refs(el);
 	const ctx = createContext(canvasEl);
 	const editor = createEditor(ctx);
+
 	let isDown = false;
 	let isDragging = false;
 

@@ -10,9 +10,34 @@ import {
 } from './vendor/game.js';
 import { notes, pockets, currents } from '../data/lune.js';
 import { createMap, toMapCoords, toWorldCoords } from './map.js';
+import { createPersistentStore } from './state.js';
+
+const cameraX = createPersistentStore('editorX', 0);
+const cameraY = createPersistentStore('editorY', 0);
+const cameraZ = createPersistentStore('editorZ', 1);
+
+const camera = {
+	get x() {
+		return cameraX.get();
+	},
+	set x(value) {
+		cameraX.set(value);
+	},
+	get y() {
+		return cameraY.get();
+	},
+	set y(value) {
+		cameraY.set(value);
+	},
+	get z() {
+		return cameraZ.get();
+	},
+	set z(value) {
+		cameraZ.set(value);
+	},
+};
 
 export function createEditor(ctx) {
-	const camera = { x: 0, y: 0, z: 1 };
 	const pointer = { x: 0, y: 0 };
 
 	function toPointerCoords() {
