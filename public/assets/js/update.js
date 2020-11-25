@@ -70,7 +70,7 @@ export function updateParticles(map, camera, particles, now) {
 		});
 	}
 
-	particles.splice(0, particles.length - 128);
+	particles.splice(0, particles.length - 64);
 
 	for (const particle of particles) {
 		let { x, x0, y, y0 } = particle;
