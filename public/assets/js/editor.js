@@ -10,11 +10,11 @@ import {
 } from './vendor/game.js';
 import { notes, pockets, currents } from '../data/lune.js';
 import { createMap, toMapCoords, toWorldCoords } from './map.js';
-import { createPersistentStore } from './state.js';
+import { createFileStore, createLocalStore } from './store.js';
 
-const cameraX = createPersistentStore('editorX', 0);
-const cameraY = createPersistentStore('editorY', 0);
-const cameraZ = createPersistentStore('editorZ', 1);
+const cameraX = createLocalStore('editorX', 0);
+const cameraY = createLocalStore('editorY', 0);
+const cameraZ = createLocalStore('editorZ', 1);
 
 const camera = {
 	get x() {
@@ -158,3 +158,14 @@ export function createEditor(ctx) {
 		serialize,
 	};
 }
+
+window.fileStore = createFileStore({
+	name: 'lune',
+	startX: 1440,
+	scaleX: 16,
+	scaleY: 0.66,
+
+	notes,
+	pockets,
+	currents,
+});

@@ -3,39 +3,14 @@
  */
 
 import { createStore } from './vendor/store.js';
-
-function getStorage(key) {
-	try {
-		return JSON.parse(localStorage.getItem(key));
-	} catch (e) {
-		return null;
-	}
-}
-
-function setStorage(key, value) {
-	try {
-		localStorage.setItem(key, JSON.stringify(value));
-	} catch (e) {
-		return;
-	}
-}
-
-export function createPersistentStore(key, value) {
-	const store = createStore(getStorage(key) ?? value);
-
-	store.subscribe((state) => {
-		setStorage(key, state);
-	});
-
-	return store;
-}
+import { createLocalStore } from './store.js';
 
 export const route = createStore('menu');
 
-export const quality = createPersistentStore('quality', 1);
-export const volume = createPersistentStore('volume', 1);
+export const quality = createLocalStore('quality', 1);
+export const volume = createLocalStore('volume', 1);
 
-export const deaths = createPersistentStore('deaths', null);
-export const distance = createPersistentStore('distance', null);
-export const checkpoint = createPersistentStore('checkpoint', null);
-export const time = createPersistentStore('time', null);
+export const deaths = createLocalStore('deaths', null);
+export const distance = createLocalStore('distance', null);
+export const checkpoint = createLocalStore('checkpoint', null);
+export const time = createLocalStore('time', null);
