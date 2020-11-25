@@ -63,9 +63,8 @@ export function renderSilt(ctx, map, viewport) {
 		}
 
 		const towLevel = map.getTowLevel(x);
-		const isInTow = y > towLevel.y;
 
-		if (isInTow) {
+		if (y > towLevel.y) {
 			continue;
 		}
 
@@ -136,8 +135,9 @@ export function renderParticles(ctx, map, particles) {
 
 	for (const particle of particles) {
 		const { x, y } = particle;
+		const gasLevel = map.getGasLevel(x);
 
-		if (y < map.getGasLevel(x) + 10) {
+		if (y < gasLevel + 5) {
 			continue;
 		}
 

@@ -62,9 +62,8 @@ export function updateParticles(map, camera, particles, now) {
 		}
 
 		const towLevel = map.getTowLevel(x);
-		const isInTow = y > towLevel.y;
 
-		if (!isInTow) {
+		if (y < towLevel.y) {
 			continue;
 		}
 
