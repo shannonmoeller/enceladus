@@ -30,7 +30,7 @@ export function updateCamera(player, link, camera) {
 }
 
 export function updateParticles(map, particles) {
-	// particles
+	// TODO: particles
 }
 
 export function updatePlayer(map, controller, player) {
@@ -125,7 +125,7 @@ export function updatePlayer(map, controller, player) {
 		fuel *= 1.03;
 	}
 
-	if (!isMostlyDead && isBobbing && fuel > 80) {
+	if (!isMostlyDead && isInGas && isSlow && fuel > 80) {
 		checkpoint.set(x);
 	}
 
