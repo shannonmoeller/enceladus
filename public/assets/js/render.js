@@ -134,7 +134,7 @@ export function renderParticles(ctx, map, particles) {
 	ctx.save();
 
 	for (const particle of particles) {
-		const { x, y } = particle;
+		const { x, x0, y, y0 } = particle;
 		const gasLevel = map.getGasLevel(x);
 		const towLevel = map.getTowLevel(x);
 
@@ -143,9 +143,12 @@ export function renderParticles(ctx, map, particles) {
 		}
 
 		ctx.beginPath();
-		ctx.arc(x, y, 0.5, 0, TAU);
-		ctx.fillStyle = 'hsl(162 100% 50% / 50%)';
-		ctx.fill();
+		ctx.moveTo(x0, y0);
+		ctx.lineTo(x, y);
+		ctx.lineCap = 'round';
+		ctx.lineWidth = 0.5;
+		ctx.strokeStyle = 'hsl(162 100% 50% / 80%)';
+		ctx.stroke();
 	}
 
 	ctx.restore();

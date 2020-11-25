@@ -68,14 +68,14 @@ export function updateParticles(map, camera, particles, now) {
 		}
 
 		particles.push({
-			x: x + towLevel.fx,
-			x0: x,
-			y: y + towLevel.fy,
-			y0: y,
+			x: x,
+			x0: x - towLevel.fx,
+			y: y,
+			y0: y - towLevel.fy,
 		});
 	}
 
-	particles.splice(0, particles.length - 50);
+	particles.splice(0, particles.length - 75);
 
 	for (const particle of particles) {
 		let { x, x0, y, y0 } = particle;
@@ -85,7 +85,7 @@ export function updateParticles(map, camera, particles, now) {
 		const towLevel = map.getTowLevel(x);
 		const isInTow = y > towLevel.y;
 
-		vy -= WATER_BOUYANCY * 0.1;
+		vy -= WATER_BOUYANCY * 0.05;
 
 		if (isInTow) {
 			vx += towLevel.fx;
