@@ -47,6 +47,7 @@ export function renderDebug(ctx, player) {
 export function renderSilt(ctx, map, viewport) {
 	ctx.save();
 
+	const { top, bottom } = viewport;
 	const left = Math.floor(viewport.left);
 	const right = Math.ceil(viewport.right);
 
@@ -56,6 +57,10 @@ export function renderSilt(ctx, map, viewport) {
 		}
 
 		let y = nextRandom(x) * 1500;
+
+		if (y < top || y > bottom) {
+			continue;
+		}
 
 		const towLevel = map.getTowLevel(x);
 		const isInTow = y > towLevel.y;
@@ -138,7 +143,7 @@ export function renderParticles(ctx, map, particles) {
 
 		ctx.beginPath();
 		ctx.arc(x, y, 0.5, 0, TAU);
-		ctx.fillStyle = 'hsl(162 100% 50% / 70%)';
+		ctx.fillStyle = 'hsl(162 100% 50% / 50%)';
 		ctx.fill();
 	}
 

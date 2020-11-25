@@ -40,6 +40,8 @@ export function updateCamera(player, link, camera) {
 }
 
 export function updateParticles(map, camera, particles, now) {
+	const top = camera.y - 300;
+	const bottom = camera.y + 300;
 	const left = Math.floor(camera.x - 300);
 	const right = Math.ceil(camera.x + 500);
 
@@ -50,6 +52,10 @@ export function updateParticles(map, camera, particles, now) {
 
 		let rand = nextRandom(x);
 		let y = rand * 1500;
+
+		if (y < top || y > bottom) {
+			continue;
+		}
 
 		if (Math.floor(rand * now) % 100) {
 			continue;
@@ -70,7 +76,7 @@ export function updateParticles(map, camera, particles, now) {
 		});
 	}
 
-	particles.splice(0, particles.length - 64);
+	particles.splice(0, particles.length - 50);
 
 	for (const particle of particles) {
 		let { x, x0, y, y0 } = particle;
