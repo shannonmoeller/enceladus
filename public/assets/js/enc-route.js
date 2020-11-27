@@ -8,12 +8,9 @@ import { route } from './state.js';
 defineElement(
 	'enc-route',
 	(el) => {
-		route.subscribe(
-			(state) => {
-				el.hidden = state !== el.name;
-			},
-			{ immediate: true }
-		);
+		route.subscribe((state) => {
+			el.hidden = state !== el.name;
+		});
 	},
 	{
 		attributes: {

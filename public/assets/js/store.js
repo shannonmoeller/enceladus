@@ -5,72 +5,60 @@
 import { createStore } from './vendor/store.js';
 
 function getStorage(key) {
-	try {
-		return JSON.parse(localStorage.getItem(key));
-	} catch (e) {
-		return null;
-	}
+  try {
+    return JSON.parse(localStorage.getItem(key));
+  } catch (e) {
+    return null;
+  }
 }
 
 function setStorage(key, value) {
-	try {
-		localStorage.setItem(key, JSON.stringify(value));
-	} catch (e) {
-		return;
-	}
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    return;
+  }
 }
 
 export function createLocalStore(key, initialState) {
-	const store = createStore(getStorage(key) ?? initialState);
+  const store = createStore(getStorage(key) ?? initialState);
 
-	store.subscribe((state) => {
-		setStorage(key, state);
-	});
+  store.subscribe((state) => {
+    setStorage(key, state);
+  });
 
-	return store;
+  return store;
 }
 
+export function createFileStore(initialState, options = {}) {
+  const { encode = JSON.stringify, decode = JSON.parse } = options;
 
-export function createFileStore(initialState) {
-	let handle;
-	let readable;
-	let writable;
+  let handle;
 
-	const store = {
-		...createStore(initialState),
+  const store = {
+    ...createStore(initialState),
 
-		async open() {
-			await store.close();
+    async open(asNew = false) {
+      if (asNew || !handle) {
+        [handle] = await window.showOpenFilePicker();
+      }
 
-			[handle] = await window.showOpenFilePicker();
-			readable = await handle.getFile();
-			writable = await handle.createWritable();
+      const readable = await handle.getFile();
 
-			store.set(JSON.parse(await readable.text()));
-		},
+      store.set(decode(await readable.text()));
+    },
 
-		async save() {
-			if (!handle) {
-				handle = await window.showSaveFilePicker();
-				readable = await handle.getFile();
-				writable = await handle.createWritable();
-			}
+    async save(asNew = false) {
+      if (asNew || !handle) {
+        handle = await window.showSaveFilePicker();
+      }
 
-			await writable.write(JSON.stringify(store.get()));
-		},
+      const writable = await handle.createWritable();
 
-		async close() {
-			try {
-				if (handle) {
-					await writable.close();
-				}
-			} finally {
-				handle = null;
-				readable = null;
-				writable = null;
-			}
-		},
-	};
+      await writable.write(encode(store.get()));
+      await writable.close();
+    },
+  };
 
-	return store;
+  return store;
 }

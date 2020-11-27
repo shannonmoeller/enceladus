@@ -82,6 +82,8 @@ export function createGame(main) {
 				y: camera.y - 20,
 			});
 
+			viewport.apply();
+
 			renderGas(ctx, map.gasPath);
 			renderSilt(ctx, map, viewport);
 			renderParticles(ctx, map, particles);

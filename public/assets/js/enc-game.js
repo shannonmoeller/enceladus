@@ -146,26 +146,17 @@ defineElement('enc-game', (el) => {
 		}
 	});
 
-	deaths.subscribe(
-		(state) => {
-			deathsEl.textContent = state;
-		},
-		{ immediate: true }
-	);
+	deaths.subscribe((state) => {
+		deathsEl.textContent = state;
+	});
 
-	distance.subscribe(
-		(state) => {
-			distanceEl.textContent = formatDistance(state);
-		},
-		{ immediate: true }
-	);
+	distance.subscribe((state) => {
+		distanceEl.textContent = formatDistance(state);
+	});
 
-	time.subscribe(
-		(state) => {
-			timeEl.textContent = formatTime(state);
-		},
-		{ immediate: true }
-	);
+	time.subscribe((state) => {
+		timeEl.textContent = formatTime(state);
+	});
 
 	window.game = game;
 });

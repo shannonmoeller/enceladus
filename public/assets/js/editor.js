@@ -59,6 +59,8 @@ export function createEditor(ctx) {
 			const mapCoords = toMapCoords(pointerCoords);
 			const worldCoords = toWorldCoords(mapCoords);
 
+			viewport.apply();
+
 			ctx.fillStyle = 'hsl(162 100% 30%)';
 			ctx.fill(map.gasPath);
 

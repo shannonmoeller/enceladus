@@ -35,14 +35,15 @@
 	text-align: left;
 }
 
-.ui-button[disabled] {
-	cursor: not-allowed;
-	opacity: 0.3;
-}
-
 .ui-button:hover,
 .ui-button:focus-visible {
 	border-color: var(--primary);
+}
+
+.ui-button[disabled] {
+	border-color: transparent;
+	cursor: not-allowed;
+	opacity: 0.3;
 }
 
 .ui-options {

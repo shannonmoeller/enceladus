@@ -9,12 +9,9 @@ import { START_X } from './constants.js';
 defineElement('enc-menu', (el) => {
 	const { continueEl, newEl, optionsEl, creditsEl } = refs(el);
 
-	distance.subscribe(
-		(state) => {
-			continueEl.disabled = state == null;
-		},
-		{ immediate: true }
-	);
+	distance.subscribe((state) => {
+		continueEl.disabled = state == null;
+	});
 
 	continueEl.onclick = () => {
 		distance.set(checkpoint.get());
