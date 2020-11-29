@@ -16,6 +16,15 @@ import { updatePlayer, renderPlayer } from './player.js';
 import { updateSilt, renderSilt } from './silt.js';
 import { updateViewport, applyViewport, restoreViewport } from './viewport.js';
 
+console.log(`
+Well, hello there. Looking to cheat? Cool.
+Let me save you some time. Try:
+
+  game.goTo(20000);
+
+https://github.com/shannonmoeller/enceladus
+`);
+
 export function createGame(canvas, mapData) {
 	const ctx = createContext(canvas);
 	const map = createMap(mapData);

@@ -73,7 +73,7 @@ defineElement('enc-editor', (el) => {
 	}
 
 	function handlePlay() {
-		window.open('/v2/test.html', 'playtest');
+		window.open('/test.html', 'playtest');
 	}
 
 	function handleConnect() {
