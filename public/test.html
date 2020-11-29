@@ -15,31 +15,39 @@
 		<link rel="icon" type="image/png" href="/assets/icon.png" />
 		<link rel="manifest" href="/manifest.json" />
 
-		<title>Editor | Enceladus</title>
+		<title>Test | Enceladus</title>
 
 		<script type="module">
-			import '/assets/editor/enc-editor/index.js';
+			import '/assets/game/enc-game/index.js';
 		</script>
 
 		<style>
 			@import '/assets/theme.css';
 			@import '/assets/html.css';
-			@import '/assets/editor/enc-editor/index.css';
+			@import '/assets/game/enc-game/index.css';
 		</style>
 
 	</head>
-	<body class="editor">
+	<body class="game">
 
-		<enc-editor>
-			<canvas class="editor-canvas" ref="canvasEl"></canvas>
+		<enc-game>
+			<canvas class="game-canvas" ref="canvasEl"></canvas>
 
-			<div class="editor-ui">
-				<button ref="openEl">Open</button>
-				<button ref="saveEl">Save</button>
-				<button ref="saveAsEl">SaveAs</button>
-				<button ref="playEl">Play</button>
+			<div class="game-ui">
+				<dl class="game-stats">
+					<dt>Time</dt>
+					<dd ref="timeEl">0</dd>
+					<dt>Distance</dt>
+					<dd ref="distanceEl">0</dd>
+					<dt>Deaths</dt>
+					<dd ref="deathsEl">0</dd>
+				</dl>
+
+				<button class="game-left" ref="leftEl">Left</button>
+				<button class="game-right" ref="rightEl">Right</button>
+				<button class="game-pause" ref="pauseEl" hidden>Pause</button>
 			</div>
-		</enc-editor>
+		</enc-game>
 
 	</body>
 </html>

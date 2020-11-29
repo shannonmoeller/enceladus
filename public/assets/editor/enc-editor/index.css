@@ -1,0 +1,19 @@
+/**
+ * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
+.editor-canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.editor-ui {
+	position: absolute;
+	top: env(safe-area-inset-top, 0);
+	right: env(safe-area-inset-right, 0);
+	left: env(safe-area-inset-left, 0);
+	padding: 0.25em;
+}

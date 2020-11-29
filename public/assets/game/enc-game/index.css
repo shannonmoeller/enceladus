@@ -1,0 +1,176 @@
+/**
+ * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
+.game-splash {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background-attachment: fixed;
+	background-color: var(--background-color);
+	background-image: var(--background-image), url(/assets/game/saturn.jpg);
+	background-position: right top;
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+.game-page {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	top: env(safe-area-inset-top, 0);
+	right: env(safe-area-inset-right, 0);
+	bottom: env(safe-area-inset-bottom, 0);
+	left: env(safe-area-inset-left, 0);
+	z-index: 1;
+	padding: 2.4em;
+	overflow: scroll;
+}
+
+.game-page > *:first-child {
+	margin-block-start: auto;
+}
+
+.game-page > *:last-child {
+	margin-block-end: auto;
+}
+
+.game-title {
+	font-size: 2em;
+}
+
+.game-subtitle {
+	font-size: 1em;
+}
+
+.game-button {
+	margin-block-start: 0.25em;
+	margin-inline-start: -11px;
+	padding-inline-start: 10px;
+	border-inline-start: 1px solid transparent;
+	line-height: 1;
+	cursor: pointer;
+	text-align: left;
+}
+
+.game-button:hover,
+.game-button:focus-visible {
+	border-color: var(--primary);
+}
+
+.game-button[disabled] {
+	border-color: transparent;
+	cursor: not-allowed;
+	opacity: 0.3;
+}
+
+.game-canvas {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+}
+
+.game-ui {
+	position: absolute;
+	top: env(safe-area-inset-top, 0);
+	right: env(safe-area-inset-right, 0);
+	bottom: env(safe-area-inset-bottom, 0);
+	left: env(safe-area-inset-left, 0);
+	padding: 0.5em;
+}
+
+.game-left {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 50%;
+	height: 100%;
+	opacity: 0;
+}
+
+.game-right {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 50%;
+	height: 100%;
+	opacity: 0;
+}
+
+.game-pause {
+	position: absolute;
+	top: env(safe-area-inset-top);
+	right: env(safe-area-inset-right);
+	padding: 20px;
+	cursor: pointer;
+	font-size: 0;
+}
+
+.game-pause::before,
+.game-pause::after {
+	content: '';
+	display: inline-block;
+	height: 12px;
+	width: 4px;
+	background: var(--primary);
+}
+
+.game-pause::after {
+	margin-inline-start: 4px;
+}
+
+.game-stats {
+	position: absolute;
+	top: env(safe-area-inset-top);
+	left: env(safe-area-inset-left);
+	padding: 20px;
+}
+
+.game-stats dt {
+	color: hsl(0 0% 100%);
+	font-size: 0.5em;
+	letter-spacing: 0.25ch;
+	text-transform: uppercase;
+}
+
+.game-stats dd + dt {
+	margin-block-start: 1em;
+}
+
+.game-stats dd {
+	color: var(--foreground-accent);
+}
+
+.game-options {
+	margin: 0.5em 0;
+}
+
+.game-option {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-block-start: 1em;
+	max-width: 200px;
+	font-size: 0.5em;
+	letter-spacing: 0.25ch;
+	line-height: 1;
+	text-transform: uppercase;
+}
+
+.game-credits {
+	margin: 0.5em 0;
+}
+
+.game-credits dt {
+	font-size: 0.5em;
+	letter-spacing: 0.25ch;
+	text-transform: uppercase;
+}
+
+.game-credits dd + dt {
+	margin-block-start: 1em;
+}
