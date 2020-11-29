@@ -42,5 +42,6 @@
 		);
 
 	--foreground-color: hsl(0 0% 100%);
+	--foreground-accent: hsl(var(--primary-hsl));
 	--font-stack: 'Oxanium', 'Helvetica Neue', arial, sans-serif;
 }
