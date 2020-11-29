@@ -15,7 +15,7 @@ import {
 
 const herschel = new Image();
 
-herschel.src = '/assets/game/herschel.png';
+herschel.src = './assets/game/herschel.png';
 
 export function updatePlayer({ controller, map, player }) {
 	const { left, right } = controller;

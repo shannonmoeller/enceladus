@@ -10,7 +10,7 @@
 	width: 100%;
 	background-attachment: fixed;
 	background-color: var(--background-color);
-	background-image: var(--background-image), url(/assets/game/saturn.jpg);
+	background-image: var(--background-image), url('./assets/game/saturn.jpg');
 	background-position: right top;
 	background-repeat: no-repeat;
 	background-size: contain;
