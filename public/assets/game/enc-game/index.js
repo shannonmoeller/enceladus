@@ -2,10 +2,8 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import {
-	defineElement,
-	refs,
-} from 'https://code.shannonmoeller.com/dhtml/v1.0.0/dhtml.js';
+import { defineElement } from '../../vendor/define.js';
+import { refs } from '../../vendor/refs.js';
 
 import { deaths, distance, route, time } from '../state.js';
 import { HOURS, MINUTES, SECONDS, PLAYER_RADIUS } from './constants.js';

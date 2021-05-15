@@ -2,10 +2,7 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import {
-	getDistance,
-	findClosest,
-} from 'https://code.shannonmoeller.com/game/v1.0.0/game.js';
+import { getDistance, findClosest } from '../../vendor/particles.js';
 
 function indexSparseArray(list) {
 	const { length } = list;

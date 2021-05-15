@@ -2,12 +2,8 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import {
-	createContext,
-	clearContext,
-	resizeContext,
-	createTickLoop,
-} from 'https://code.shannonmoeller.com/game/v1.0.0/game.js';
+import { createContext, clearContext, resizeContext } from '../../vendor/canvas.js';
+import { createTickLoop } from '../../vendor/loop.js';
 
 import { renderCursor } from './cursor.js';
 import { createFile } from './file.js';

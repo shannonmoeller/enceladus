@@ -2,8 +2,8 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import { createStore } from 'https://code.shannonmoeller.com/store/v1.0.0/store.js';
-import { createLocalStore } from 'https://code.shannonmoeller.com/store/v1.0.0/local.js';
+import { createStore } from '../vendor/store.js';
+import { createLocalStore } from '../vendor/store-local.js';
 
 export const route = createStore('menu');
 

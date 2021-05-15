@@ -10,4 +10,4 @@ https://itch.io/jam/game-off-2020/rate/837417
 
 ----
 
-Copyright © [Shannon Moeller](http://shannonmoeller.com). All rights reserved. Learn, don't loot.
+Copyright © [Shannon Moeller](https://shannonmoeller.com). All rights reserved. Learn, don't loot.

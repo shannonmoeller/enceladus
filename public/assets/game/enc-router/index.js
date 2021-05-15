@@ -2,8 +2,7 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import { defineElement } from 'https://code.shannonmoeller.com/dhtml/v1.0.0/dhtml.js';
-
+import { defineElement } from '../../vendor/define.js';
 import { route } from '../state.js';
 
 defineElement('enc-router', () => {});

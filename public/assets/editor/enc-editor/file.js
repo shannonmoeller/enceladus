@@ -2,7 +2,7 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import { createFileStore } from 'https://code.shannonmoeller.com/store/v1.0.0/file.js';
+import { createFileStore } from '../../vendor/store-file.js';
 
 export function encode(data) {
 	// Dangerously squash sparse data

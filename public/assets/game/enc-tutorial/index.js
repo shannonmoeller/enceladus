@@ -2,11 +2,8 @@
  * Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
-import {
-	defineElement,
-	refs,
-} from 'https://code.shannonmoeller.com/dhtml/v1.0.0/dhtml.js';
-
+import { defineElement } from '../../vendor/define.js';
+import { refs } from '../../vendor/refs.js';
 import { route } from '../state.js';
 
 defineElement('enc-tutorial', (el) => {
