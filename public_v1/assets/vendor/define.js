@@ -7,138 +7,138 @@ const isInitialized = Symbol('isInitialized');
 const events = ['connect', 'disconnect', 'adopt', 'attributechange'];
 
 export function defineElement(name, init, options = {}) {
-	let { attributes = {}, base = HTMLElement, ...rest } = options;
+  let { attributes = {}, base = HTMLElement, ...rest } = options;
 
-	class CustomElement extends base {
-		static get observedAttributes() {
-			return Object.keys(attributes).map(hyphenate);
-		}
+  class CustomElement extends base {
+    static get observedAttributes() {
+      return Object.keys(attributes).map(hyphenate);
+    }
 
-		constructor() {
-			super();
+    constructor() {
+      super();
 
-			defineAttributes(this, attributes);
-			defineEvents(this, events);
-		}
+      defineAttributes(this, attributes);
+      defineEvents(this, events);
+    }
 
-		connectedCallback() {
-			if (!this.isConnected) {
-				return;
-			}
+    connectedCallback() {
+      if (!this.isConnected) {
+        return;
+      }
 
-			const controller = new AbortController();
-			const { signal } = controller;
+      const controller = new AbortController();
+      const { signal } = controller;
 
-			this[connection]?.abort();
-			this[connection] = controller;
+      this[connection]?.abort();
+      this[connection] = controller;
 
-			if (!this[isInitialized]) {
-				this[isInitialized] = true;
-				init(this, { signal });
-			}
+      if (!this[isInitialized]) {
+        this[isInitialized] = true;
+        init(this, { signal });
+      }
 
-			emit(this, 'connect', { signal });
-		}
+      emit(this, 'connect', { signal });
+    }
 
-		disconnectedCallback() {
-			if (this.isConnected) {
-				return;
-			}
+    disconnectedCallback() {
+      if (this.isConnected) {
+        return;
+      }
 
-			const controller = this[connection];
-			const { signal } = controller;
+      const controller = this[connection];
+      const { signal } = controller;
 
-			controller.abort();
-			this[connection] = null;
+      controller.abort();
+      this[connection] = null;
 
-			emit(this, 'disconnect', { signal });
-		}
+      emit(this, 'disconnect', { signal });
+    }
 
-		adoptedCallback() {
-			emit(this, 'adopt');
-		}
+    adoptedCallback() {
+      emit(this, 'adopt');
+    }
 
-		attributeChangedCallback(name, oldValue, value) {
-			emit(this, 'attributechange', { name, value, oldValue });
-		}
-	}
+    attributeChangedCallback(name, oldValue, value) {
+      emit(this, 'attributechange', { name, value, oldValue });
+    }
+  }
 
-	customElements.define(name, CustomElement, rest);
+  customElements.define(name, CustomElement, rest);
 
-	return CustomElement;
+  return CustomElement;
 }
 
 export function defineAttributes(element, attributes = {}) {
-	for (let [property, descriptor] of Object.entries(attributes)) {
-		defineAttribute(element, property, descriptor);
-	}
+  for (let [property, descriptor] of Object.entries(attributes)) {
+    defineAttribute(element, property, descriptor);
+  }
 }
 
 export function defineAttribute(element, property, descriptor = {}) {
-	if (typeof descriptor === 'function') {
-		descriptor = { get: descriptor, set: String };
-	}
+  if (typeof descriptor === 'function') {
+    descriptor = { get: descriptor, set: String };
+  }
 
-	if (descriptor === JSON) {
-		descriptor = { get: JSON.parse, set: JSON.stringify };
-	}
+  if (descriptor === JSON) {
+    descriptor = { get: JSON.parse, set: JSON.stringify };
+  }
 
-	let attribute = hyphenate(property);
-	let { get, set, ...rest } = descriptor;
+  let attribute = hyphenate(property);
+  let { get, set, ...rest } = descriptor;
 
-	if (get) {
-		if (get === Boolean) {
-			rest.get = () => {
-				return element.hasAttribute(attribute);
-			};
-		} else {
-			rest.get = () => {
-				return get(element.getAttribute(attribute));
-			};
-		}
-	}
+  if (get) {
+    if (get === Boolean) {
+      rest.get = () => {
+        return element.hasAttribute(attribute);
+      };
+    } else {
+      rest.get = () => {
+        return get(element.getAttribute(attribute));
+      };
+    }
+  }
 
-	if (set) {
-		if (get === Boolean) {
-			rest.set = (value) => {
-				element.toggleAttribute(attribute, value);
-			};
-		} else {
-			rest.set = (value) => {
-				element.setAttribute(attribute, set(value));
-			};
-		}
-	}
+  if (set) {
+    if (get === Boolean) {
+      rest.set = (value) => {
+        element.toggleAttribute(attribute, value);
+      };
+    } else {
+      rest.set = (value) => {
+        element.setAttribute(attribute, set(value));
+      };
+    }
+  }
 
-	return Object.defineProperty(element, property, rest);
+  return Object.defineProperty(element, property, rest);
 }
 
 export function hyphenate(string) {
-	return string.replace(/[A-Z]/g, (x) => `-${x.toLowerCase()}`);
+  return string.replace(/[A-Z]/g, (x) => `-${x.toLowerCase()}`);
 }
 
 export function defineEvents(element, events = []) {
-	for (let event of events) {
-		defineEvent(element, event);
-	}
+  for (let event of events) {
+    defineEvent(element, event);
+  }
 }
 
 export function defineEvent(element, event) {
-	let callback;
+  let callback;
 
-	return Object.defineProperty(element, `on${event}`, {
-		get: () => {
-			return callback;
-		},
+  return Object.defineProperty(element, `on${event}`, {
+    get: () => {
+      return callback;
+    },
 
-		set: (value) => {
-			element.removeEventListener(event, callback);
-			element.addEventListener(event, value);
-			callback = value;
-		},
-	});
+    set: (value) => {
+      element.removeEventListener(event, callback);
+      element.addEventListener(event, value);
+      callback = value;
+    },
+  });
 }
 
 export function emit(emitter, name, detail) {
-	return emitter.dispatchEvent(new CustomEvent(name, { detail }));
+  return emitter.dispatchEvent(new CustomEvent(name, { detail }));
 }

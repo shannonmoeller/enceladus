@@ -1,37 +1,37 @@
-      @font-face {
-        font-family: 'oxanium';
-        src: url('./play/oxanium.ttf') format('woff2-variations');
-        font-style: normal;
-        font-weight: 200;
-      }
+@font-face {
+  font-family: 'oxanium';
+  src: url('./play/oxanium.ttf') format('woff2-variations');
+  font-style: normal;
+  font-weight: 200;
+}
 
-      *,
-      *::before,
-      *::after {
-        box-sizing: border-box;
-        overflow-wrap: break-word;
-        margin: unset;
-        padding: unset;
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  margin: unset;
+  padding: unset;
 
-        background: unset;
-        border: unset;
-        color: inherit;
-        font: inherit;
-        list-style: none;
-        outline: unset;
-        text-decoration: unset;
+  background: unset;
+  border: unset;
+  color: inherit;
+  font: inherit;
+  list-style: none;
+  outline: unset;
+  text-decoration: unset;
 
-        -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
-        -webkit-touch-callout: none;
-        touch-action: none;
-        -webkit-user-select: none;
-        user-select: none;
-      }
+  -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
+  -webkit-touch-callout: none;
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
 
-      body {
-        background: hsl(0 0% 20%);
-        color: hsl(0 0% 98%);
-        font-family: 'oxanium', arial, sans-serif;
-        font-size: clamp(1rem, 3vmin, 3rem);
-        font-weight: 200;
-      }
+body {
+  background: hsl(0 0% 20%);
+  color: hsl(0 0% 98%);
+  font-family: 'oxanium', arial, sans-serif;
+  font-size: clamp(1rem, 3vmin, 3rem);
+  font-weight: 200;
+}

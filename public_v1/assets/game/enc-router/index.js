@@ -8,23 +8,23 @@ import { route } from '../state.js';
 defineElement('enc-router', () => {});
 
 defineElement(
-	'enc-route',
-	(el) => {
-		const { parentElement } = el;
+  'enc-route',
+  (el) => {
+    const { parentElement } = el;
 
-		route.subscribe((state) => {
-			if (state === el.name) {
-				parentElement.append(el);
-			} else {
-				el.remove();
-			}
-		});
+    route.subscribe((state) => {
+      if (state === el.name) {
+        parentElement.append(el);
+      } else {
+        el.remove();
+      }
+    });
 
-		el.hidden = false;
-	},
-	{
-		attributes: {
-			name: String,
-		},
-	}
+    el.hidden = false;
+  },
+  {
+    attributes: {
+      name: String,
+    },
+  }
 );

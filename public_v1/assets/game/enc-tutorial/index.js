@@ -7,9 +7,9 @@ import { refs } from '../../vendor/refs.js';
 import { route } from '../state.js';
 
 defineElement('enc-tutorial', (el) => {
-	const { backEl } = refs(el);
+  const { backEl } = refs(el);
 
-	backEl.onclick = () => {
-		route.set('menu');
-	};
+  backEl.onclick = () => {
+    route.set('menu');
+  };
 });

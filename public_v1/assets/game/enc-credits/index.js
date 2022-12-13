@@ -7,9 +7,9 @@ import { refs } from '../../vendor/refs.js';
 import { route } from '../state.js';
 
 defineElement('enc-credits', (el) => {
-	const { backEl } = refs(el);
+  const { backEl } = refs(el);
 
-	backEl.onclick = () => {
-		route.set('menu');
-	};
+  backEl.onclick = () => {
+    route.set('menu');
+  };
 });

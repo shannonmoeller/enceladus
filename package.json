@@ -14,13 +14,19 @@
     "parserOptions": {
       "ecmaVersion": "latest",
       "sourceType": "module"
+    },
+    "rules": {
+      "no-sparse-arrays": 0
     }
   },
   "stylelint": {
-    "extends": "stylelint-config-recommended"
+    "extends": "stylelint-config-recommended",
+    "rules": {
+      "no-descending-specificity": null
+    }
   },
   "prettier": {
-    "singleAttributePerLine": false,
-    "singleQuote": true
+    "singleQuote": true,
+    "printWidth": 160
   }
 }

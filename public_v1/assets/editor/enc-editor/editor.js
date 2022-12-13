@@ -11,66 +11,66 @@ import { createMap, renderMap } from './map.js';
 import { updateViewport, applyViewport, restoreViewport } from './viewport.js';
 
 export function createEditor(canvas) {
-	const ctx = createContext(canvas);
-	const file = createFile();
+  const ctx = createContext(canvas);
+  const file = createFile();
 
-	const camera = {
-		x: 0,
-		y: 0,
-		z: 1,
-	};
+  const camera = {
+    x: 0,
+    y: 0,
+    z: 1,
+  };
 
-	const cursor = 0;
+  const cursor = 0;
 
-	const pointer = {
-		x: 0,
-		y: 0,
-	};
+  const pointer = {
+    x: 0,
+    y: 0,
+  };
 
-	const map = createMap(file.get());
-	const viewport = {};
+  const map = createMap(file.get());
+  const viewport = {};
 
-	const editor = {
-		ctx,
-		camera,
-		cursor,
-		file,
-		map,
-		pointer,
-		viewport,
-	};
+  const editor = {
+    ctx,
+    camera,
+    cursor,
+    file,
+    map,
+    pointer,
+    viewport,
+  };
 
-	const loop = createTickLoop({
-		update() {
-			updateViewport(editor);
-		},
+  const loop = createTickLoop({
+    update() {
+      updateViewport(editor);
+    },
 
-		render() {
-			clearContext(ctx);
-			applyViewport(editor);
-			renderMap(editor);
-			renderCursor(editor);
-			restoreViewport(editor);
-		},
-	});
+    render() {
+      clearContext(ctx);
+      applyViewport(editor);
+      renderMap(editor);
+      renderCursor(editor);
+      restoreViewport(editor);
+    },
+  });
 
-	function resize() {
-		resizeContext(ctx);
-	}
+  function resize() {
+    resizeContext(ctx);
+  }
 
-	function start() {
-		resize();
-		loop.start();
-	}
+  function start() {
+    resize();
+    loop.start();
+  }
 
-	function stop() {
-		loop.stop();
-	}
+  function stop() {
+    loop.stop();
+  }
 
-	return {
-		...editor,
-		resize,
-		start,
-		stop,
-	};
+  return {
+    ...editor,
+    resize,
+    start,
+    stop,
+  };
 }

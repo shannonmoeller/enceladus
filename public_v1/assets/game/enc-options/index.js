@@ -7,19 +7,19 @@ import { refs } from '../../vendor/refs.js';
 import { route, volume, quality } from '../state.js';
 
 defineElement('enc-options', (el) => {
-	const { volumeEl, qualityEl, backEl } = refs(el);
+  const { volumeEl, qualityEl, backEl } = refs(el);
 
-	volumeEl.value = volume.get();
-	volumeEl.onchange = () => {
-		volume.set(Number(volumeEl.value));
-	};
+  volumeEl.value = volume.get();
+  volumeEl.onchange = () => {
+    volume.set(Number(volumeEl.value));
+  };
 
-	qualityEl.value = quality.get();
-	qualityEl.onchange = () => {
-		quality.set(Number(qualityEl.value));
-	};
+  qualityEl.value = quality.get();
+  qualityEl.onchange = () => {
+    quality.set(Number(qualityEl.value));
+  };
 
-	backEl.onclick = () => {
-		route.set('menu');
-	};
+  backEl.onclick = () => {
+    route.set('menu');
+  };
 });
