@@ -1,0 +1,26 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lint": "npx eslint --fix '**/*.js' && npx stylelint --fix '**/*.css' && prettier --write '**/*.{html,css,js}' && npx -p typescript tsc"
+  },
+  "eslintConfig": {
+    "extends": "eslint:recommended",
+    "env": {
+      "browser": true,
+      "es6": true,
+      "node": true
+    },
+    "parserOptions": {
+      "ecmaVersion": "latest",
+      "sourceType": "module"
+    }
+  },
+  "stylelint": {
+    "extends": "stylelint-config-recommended"
+  },
+  "prettier": {
+    "singleAttributePerLine": false,
+    "singleQuote": true
+  }
+}

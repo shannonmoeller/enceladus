@@ -1,0 +1,10 @@
+{
+  "include": ["public/**/*.js"],
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "target": "ESNEXT",
+    "allowJs": true,
+    "checkJs": true,
+    "noEmit": true
+  }
+}

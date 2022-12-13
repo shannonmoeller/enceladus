@@ -1,124 +1,125 @@
-<!doctype html>
+<!DOCTYPE html>
 
 <!--
- ! Copyright © Shannon Moeller. All rights reserved. Learn, don't loot.
+ ! Copyright (c) Shannon Moeller. All rights reserved. Learn, don't loot.
  !-->
 
-<html dir="ltr" lang="en">
-	<head>
+<html lang="en-us">
+  <head>
+    <meta name="charset" content="utf-8" />
+    <meta
+      name="viewport"
+      content="initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover,width=device-width"
+    />
+    <meta
+      name="description"
+      content="An inverted lunar-lander adventure game by Shannon Moeller."
+    />
+    <link
+      rel="apple-touch-icon"
+      type="image/png"
+      href="/assets/images/icon.png"
+    />
+    <link rel="icon" type="image/png" href="/assets/images/icon.png" />
 
-		<meta charset="utf-8" />
-		<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover,width=device-width" />
-		<meta name="description" content="A game by Shannon Moeller for Game Off 2020." />
+    <title>Enceladus</title>
 
-		<link rel="apple-touch-icon" type="image/png" href="./assets/icon.png" />
-		<link rel="icon" type="image/png" href="./assets/icon.png" />
-		<link rel="manifest" href="./manifest.json" />
+    <script type="module">
+      import './enceladus.js';
+    </script>
 
-		<title>Enceladus</title>
+    <style>
+      @import './enceladus.css';
+    </style>
+  </head>
 
-		<script type="module">
-			import './assets/game/enc-router/index.js';
-			import './assets/game/enc-menu/index.js';
-			import './assets/game/enc-game/index.js';
-			import './assets/game/enc-options/index.js';
-			import './assets/game/enc-credits/index.js';
-			import './assets/game/enc-tutorial/index.js';
-		</script>
+  <body>
+    <enceladus-play>
+      <article id="home">
+        <h1>Enceladus</h1>
 
-		<style>
-			@import './assets/theme.css';
-			@import './assets/html.css';
-			@import './assets/game/enc-game/index.css';
-		</style>
+        <nav>
+          <button name="continue">Continue</button>
+          <button name="new">New Game</button>
+          <button name="options">Options</button>
+          <button name="about">About</button>
+        </nav>
+      </article>
 
-	</head>
-	<body class="game">
+      <article id="game">
+        <canvas></canvas>
 
-		<enc-router>
-			<enc-route class="game-splash" name="menu">
-				<enc-menu class="game-page">
-					<h1 class="game-title">Enceladus</h1>
-					<ul class="game-menu">
-						<li><button class="game-button" ref="continueEl" disabled>Continue</button></li>
-						<li><button class="game-button" ref="newEl">New Game</button></li>
-						<li><button class="game-button" ref="howToEl">How to Play</button></li>
-						<li><button class="game-button" ref="optionsEl">Options</button></li>
-						<li><button class="game-button" ref="creditsEl">Credits</button></li>
-					</ul>
-				</enc-menu>
-			</enc-route>
+        <dl>
+          <dt>Time</dt>
+          <dd>00:00</dd>
+          <dt>Distance</dt>
+          <dd>0.00km</dd>
+          <dt>Deaths</dt>
+          <dd>0000</dd>
+        </dl>
 
-			<enc-route name="game" hidden>
-				<enc-game>
-					<canvas class="game-canvas" ref="canvasEl"></canvas>
+        <section>
+          <ol>
+            <li>Can you hear me?</li>
+            <li>Come on. Wake up.</li>
+            <li>
+              Distress beacon says you have a heartbeat, so I know you're not
+              dead.
+            </li>
+          </ol>
+          <button name="a">I'm here!</button>
+          <button name="b">You sure?</button>
+        </section>
 
-					<div class="game-ui">
-						<dl class="game-stats">
-							<dt>Time</dt>
-							<dd ref="timeEl">0</dd>
-							<dt>Distance</dt>
-							<dd ref="distanceEl">0</dd>
-							<dt>Deaths</dt>
-							<dd ref="deathsEl">0</dd>
-						</dl>
+        <button name="left">Left</button>
+        <button name="right">Right</button>
+        <button name="pause">Pause</button>
+      </article>
 
-						<button class="game-left" ref="leftEl">Left</button>
-						<button class="game-right" ref="rightEl">Right</button>
-						<button class="game-pause" ref="pauseEl">Pause</button>
-					</div>
-				</enc-game>
-			</enc-route>
+      <article id="options">
+        <h2>Options</h2>
 
-			<enc-route name="howTo" hidden>
-				<enc-tutorial class="game-page">
-					<h2 class="game-subtitle">How to Play</h2>
-					<p>To move left, tap <kbd>a</kbd>, <kbd>←</kbd>, or the left half of the screen.</p>
-					<p>To move right, tap <kbd>d</kbd>, <kbd>→</kbd>, or the right half of the screen.</p>
-					<p>This game is a progressive web app and may be installed by adding it to your homescreen.</p>
-					<h2 class="game-subtitle">Story</h2>
-					<p>You've crash landed into Enceladus, a moon of Saturn. You're 9.5au from the sun, trapped under 20km of ice, with only a strange chemiluminescent glow from the subterranean ocean to light your way.</p>
-					<p>A rescue ship is waiting in orbit. To reach it you must travel to the south pole and be shot out of a geyser using your thrusters to jump from gas pocket to gas pocket.</p>
-					<p>Watch your head.</p>
-					<button class="game-button" ref="backEl">Back</button>
-				</enc-tutorial>
-			</enc-route>
+        <label>
+          Quality
+          <input
+            type="range"
+            name="quality"
+            value="1"
+            min="0"
+            max="1"
+            step="0.05"
+          />
+        </label>
+        <label>
+          Volume
+          <input
+            type="range"
+            name="volume"
+            value="1"
+            min="0"
+            max="1"
+            step="0.05"
+          />
+        </label>
+      </article>
 
-			<enc-route name="options" hidden>
-				<enc-options class="game-page">
-					<h2 class="game-subtitle">Options</h2>
-					<ul class="game-options">
-						<li>
-							<label class="game-option">
-								Volume
-								<input type="range" ref="volumeEl" value="1" min="0" max="1" step="0.05" />
-							</label>
-						</li>
-						<li>
-							<label class="game-option">
-								Quality
-								<input type="range" ref="qualityEl" value="1" min="0.1" max="1" step="0.05" />
-							</label>
-						</li>
-					</ul>
-					<button class="game-button" ref="backEl">Back</button>
-				</enc-options>
-			</enc-route>
+      <article id="about">
+        <h2>About</h2>
 
-			<enc-route name="credits" hidden>
-				<enc-credits class="game-page">
-					<h2 class="game-subtitle">Credits</h2>
-					<dl class="game-credits">
-						<dt>Art and development</dt>
-						<dd><a class="game-button" href="https://github.com/shannonmoeller">Shannon Moeller</a></dd>
-						<dt>Feedback, testing, and encouragement</dt>
-						<dd><a class="game-button" href="https://github.com/diego-escalante">Diego Escalante</a></dd>
-						<dd><a class="game-button" href="https://github.com/prestaul">Matt Dunlap</a></dd>
-					</dl>
-					<button class="game-button" ref="backEl">Back</button>
-				</enc-credits>
-			</enc-route>
-		</enc-router>
-
-	</body>
+        <dl>
+          <dt>Art, story, and development</dt>
+          <dd>
+            <a href="https://github.com/shannonmoeller">Shannon Moeller</a>
+          </dd>
+          <dt>Feedback, testing, and encouragement</dt>
+          <dd>
+            <a href="https://github.com/diego-escalante">Diego Escalante</a>
+          </dd>
+          <dd><a href="https://github.com/prestaul">Matt Dunlap</a></dd>
+          <dt>Music</dt>
+          <dd>"Clair de Lune" by Claude Debussy</dd>
+        </dl>
+      </article>
+    </enceladus-play>
+  </body>
 </html>
