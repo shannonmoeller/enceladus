@@ -1,3 +1,7 @@
+/*!
+ * Copyright (c) 2022 Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
 const cacheName = 'enceladus-v2';
 
 addEventListener('fetch', (event) => {

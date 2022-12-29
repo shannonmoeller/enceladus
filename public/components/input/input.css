@@ -1,4 +1,4 @@
-/**
+/*!
  * Copyright (c) 2022 Shannon Moeller. All rights reserved. Learn, don't loot.
  */
 
