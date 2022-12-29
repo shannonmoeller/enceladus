@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <!--
- ! Copyright (c) Shannon Moeller. All rights reserved. Learn, don't loot.
+ ! Copyright (c) 2022 Shannon Moeller. All rights reserved. Learn, don't loot.
  !-->
 
 <html lang="en-us">
@@ -15,45 +15,45 @@
     <title>Editor :: Enceladus</title>
 
     <script type="module">
-      import './enceladus.js';
+      import '/enceladus.js';
     </script>
 
     <style>
-      @import './enceladus.css';
+      @import '/enceladus.css';
     </style>
   </head>
 
   <body>
-    <enceladus-edit>
-      <canvas></canvas>
+    <enc-edit>
+      <canvas id="canvas"></canvas>
 
-      <div class="edit-tools">
-        <button name="create">Create</button>
-        <button name="load">Load</button>
-        <button name="save">Save</button>
-        <button name="test">Test</button>
+      <article>
+        <button class="enc-button" name="create">Create</button>
+        <button class="enc-button" name="load">Load</button>
+        <button class="enc-button" name="save">Save</button>
+        <button class="enc-button" name="test">Test</button>
 
-        <label>
+        <label class="enc-label">
           Ice
-          <input type="text" name="ice" />
+          <input class="enc-input" type="text" name="ice" />
         </label>
-        <label>
+        <label class="enc-label">
           Gas
-          <input type="text" name="gas" />
+          <input class="enc-input" type="text" name="gas" />
         </label>
-        <label>
+        <label class="enc-label">
           Tow
-          <input type="text" name="tow" />
+          <input class="enc-input" type="text" name="tow" />
         </label>
-        <label>
+        <label class="enc-label">
           dx
-          <input type="text" name="dx" />
+          <input class="enc-input" type="text" name="dx" />
         </label>
-        <label>
+        <label class="enc-label">
           dy
-          <input type="text" name="dy" />
+          <input class="enc-input" type="text" name="dy" />
         </label>
-      </div>
-    </enceladus-edit>
+      </article>
+    </enc-edit>
   </body>
 </html>

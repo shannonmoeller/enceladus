@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 
 <!--
- ! Copyright (c) Shannon Moeller. All rights reserved. Learn, don't loot.
+ ! Copyright (c) 2022 Shannon Moeller. All rights reserved. Learn, don't loot.
  !-->
 
 <html lang="en-us">
@@ -15,16 +15,18 @@
     <title>Enceladus</title>
 
     <script type="module">
-      import './enceladus.js';
+      import '/enceladus.js';
     </script>
 
     <style>
-      @import './enceladus.css';
+      @import '/enceladus.css';
     </style>
   </head>
 
   <body>
-    <enceladus-play>
+    <enc-play>
+      <canvas id="canvas"></canvas>
+
       <article id="home">
         <h1>Enceladus</h1>
 
@@ -37,8 +39,6 @@
       </article>
 
       <article id="game">
-        <canvas></canvas>
-
         <dl>
           <dt>Time</dt>
           <dd>00:00</dd>
@@ -93,6 +93,6 @@
           <dd>"Clair de Lune" by Claude Debussy</dd>
         </dl>
       </article>
-    </enceladus-play>
+    </enc-play>
   </body>
 </html>

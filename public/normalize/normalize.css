@@ -1,0 +1,55 @@
+/**
+ * Copyright (c) 2022 Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
+@layer enc.normalize {
+  @font-face {
+    font-family: 'oxanium';
+    src: url('../assets/fonts/oxanium.ttf') format('woff2-variations');
+    font-style: normal;
+    font-weight: 200;
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    overflow-wrap: break-word;
+    margin: unset;
+    padding: unset;
+
+    background: unset;
+    border: unset;
+    color: inherit;
+    font: inherit;
+    list-style: none;
+    outline: unset;
+    text-decoration: unset;
+
+    -webkit-tap-highlight-color: hsl(0 0% 0% / 0);
+    -webkit-touch-callout: none;
+    touch-action: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  html {
+    font-size: 62.5%;
+  }
+
+  body {
+    height: 100dvh;
+    width: 100vw;
+    overflow: hidden;
+
+    background: hsl(0 0% 20%);
+    color: hsl(0 0% 98%);
+    font: 200 1.6rem / 1.5 'oxanium', system-ui, sans-serif;
+  }
+
+  canvas {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+  }
+}

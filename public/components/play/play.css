@@ -1,0 +1,9 @@
+/**
+ * Copyright (c) 2022 Shannon Moeller. All rights reserved. Learn, don't loot.
+ */
+
+@layer enc.components {
+  enc-play {
+    font-size: clamp(1.6rem, 2vmin + 1rem, 16rem);
+  }
+}
