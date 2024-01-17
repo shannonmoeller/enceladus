@@ -6,6 +6,8 @@
 
 @import './normalize/normalize.css';
 
+@import './tokens/color.css';
+
 @import './components/button/button.css';
 @import './components/label/label.css';
 @import './components/input/input.css';
