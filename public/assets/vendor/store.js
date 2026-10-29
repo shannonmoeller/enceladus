@@ -13,10 +13,10 @@ export function createStore(state) {
 		set(next) {
 			state = typeof next === 'function' ? next(state) : next;
 
-			return Promise.all(
-				[...listeners].map(async (listener) => {
+			return Promise.allSettled(
+				Array.from(listeners).map(async (listener) => {
 					await listener(state);
-				})
+				}),
 			);
 		},
 

@@ -22,15 +22,8 @@ const KEYS = {
 };
 
 defineElement('enc-game', (el) => {
-	const {
-		canvasEl,
-		leftEl,
-		rightEl,
-		pauseEl,
-		deathsEl,
-		distanceEl,
-		timeEl,
-	} = refs(el);
+	const { canvasEl, leftEl, rightEl, pauseEl, deathsEl, distanceEl, timeEl } =
+		refs(el);
 
 	let mapData =
 		window.opener?.location?.origin === location.origin &&

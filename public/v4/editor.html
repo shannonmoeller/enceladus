@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<meta charset="utf-8" />
+
+	<link rel="apple-touch-icon" type="image/png" href="../assets/icon.png" />
+	<link rel="icon" type="image/png" href="../assets/icon.png" />
+
+	<title>Enceladus 4</title>
+
+	<script type="module" blocking="render">
+		let ctx = document.getElementById('canvas').getContext('2d');
+
+		let app = {
+			time: {
+				now0: 0,
+				now: performance.now(),
+
+				deltaMin: 1 / 240,
+				deltaMax: 1 / 30,
+				delta: 1 / 60,
+				delta0: 1 / 60,
+				deltaPow2: (1 / 60) ** 2,
+				deltaScale: 1,
+			},
+
+			keyboard: {},
+
+			pointer: {
+				x0: 0,
+				x: 0,
+				y0: 0,
+				y: 0,
+				down: false,
+				drag: false,
+			},
+
+			settings: {
+				quality: 1,
+				zoom: 1,
+				tool: 'ice',
+			},
+
+			camera: {
+				x: 0,
+				y: 400,
+			},
+		};
+
+		let level = {
+			ice: {
+				1: 57,
+				2: 56,
+				3: 53,
+				4: 56,
+				5: 53,
+				6: 49,
+				7: 53,
+				8: 49,
+				9: 44,
+			},
+			gas: {},
+			flow: {},
+		};
+
+		function handleResize() {
+			let scale = devicePixelRatio * app.settings.quality;
+
+			ctx.width = window.innerWidth;
+			ctx.height = window.innerHeight;
+
+			ctx.canvas.width = ctx.width * scale;
+			ctx.canvas.height = ctx.height * scale;
+
+			ctx.scale(scale, scale);
+		}
+
+		function loop(now) {
+			app.time.now0 = app.time.now;
+			app.time.now = now;
+
+			app.time.delta0 = app.time.delta;
+			app.time.delta = Math.max(app.time.deltaMin, Math.min(app.time.deltaMax, (app.time.now - app.time.now0) / 1000));
+			app.time.deltaPow2 = app.time.delta ** 2;
+			app.time.deltaScale = app.time.delta / app.time.delta0;
+
+			update();
+			render();
+
+			requestAnimationFrame(loop);
+		}
+
+		function update() {
+			if (app.keyboard.d) app.camera.x += 100 * app.time.delta;
+			if (app.keyboard.a) app.camera.x -= 100 * app.time.delta;
+			if (app.keyboard.s) app.camera.y += 100 * app.time.delta;
+			if (app.keyboard.w) app.camera.y -= 100 * app.time.delta;
+
+			if (app.pointer.down) {
+				app.camera.x -= (app.pointer.x - app.pointer.x0) / app.settings.zoom;
+				app.camera.y -= (app.pointer.y - app.pointer.y0) / app.settings.zoom;
+			}
+
+			app.pointer.x0 = app.pointer.x;
+			app.pointer.y0 = app.pointer.y;
+		}
+
+		function render() {
+			ctx.save();
+
+			ctx.clearRect(0, 0, ctx.width, ctx.height);
+			ctx.translate(ctx.width / 2, ctx.height / 2);
+			ctx.scale(app.settings.zoom, app.settings.zoom);
+			ctx.translate(-app.camera.x, -app.camera.y);
+
+			ctx.fillStyle = 'oklch(from seagreen l c h / 50%)';
+			ctx.fillRect(0, 0, 10 * 10, 88 * 10);
+
+			ctx.fillStyle = 'oklch(from gray l c h / 50%)';
+			ctx.beginPath();
+			Object.entries(level.ice)
+				.sort(([a], [b]) => a - b)
+				.forEach(([x, y], i, list) => {
+					if (i === 0) ctx.moveTo(x * 10, 0);
+					ctx.lineTo(x * 10, (88 - y) * 10);
+					if (i === list.length - 1) ctx.lineTo(x * 10, 0);
+				});
+			ctx.closePath();
+			ctx.fill();
+
+			ctx.fillStyle = 'oklch(from lime l c h / 50%)';
+			ctx.beginPath();
+			Object.entries(level.gas)
+				.sort(([a], [b]) => a - b)
+				.forEach(([x, y], i, list) => {
+					if (i === 0) ctx.moveTo(x * 10, 0);
+					ctx.lineTo(x * 10, (88 - y) * 10);
+					if (i === list.length - 1) ctx.lineTo(x * 10, 0);
+				});
+			ctx.closePath();
+			ctx.fill();
+
+			let [pointerX, pointerY] = project([app.pointer.x, app.pointer.y]);
+			ctx.fillStyle = app.pointer.down ? 'cyan' : 'white';
+			ctx.fillRect(pointerX - 5, pointerY - 5, 10, 10);
+
+			let [left, top] = project([0, 0]);
+			let [right, bottom] = project([ctx.width, ctx.height]);
+			ctx.strokeStyle = 'yellow';
+			ctx.strokeRect(left + 2, top + 2, right - left - 4, bottom - top - 4);
+
+			ctx.restore();
+
+			document.body.dataset.debug = JSON.stringify(level, null, 2);
+		}
+
+		function norm(value, min, max) {
+			return (value - min) / (max - min);
+		}
+
+		function lerp(value, min, max) {
+			return value * (max - min) + min;
+		}
+
+		function map(value, minA, maxA, minB, maxB) {
+			return lerp(norm(value, minA, maxA), minB, maxB);
+		}
+
+		function project([x, y]) {
+			let halfWidth = ctx.width / 2 / app.settings.zoom;
+			let halfHeight = ctx.height / 2 / app.settings.zoom;
+
+			return [
+				map(x, 0, ctx.width, -halfWidth, halfWidth) + app.camera.x,
+				map(y, 0, ctx.height, -halfHeight, halfHeight) + app.camera.y,
+			];
+		}
+
+		addEventListener('keydown', (event) => {
+			app.keyboard[event.key] = true;
+		});
+
+		addEventListener('keyup', (event) => {
+			delete app.keyboard[event.key];
+		});
+
+		addEventListener('pointerdown', (event) => {
+			[app.pointer.x, app.pointer.y] = [event.clientX, event.clientY];
+			[app.pointer.x0, app.pointer.y0] = [app.pointer.x, app.pointer.y];
+
+			if (event.target.closest('canvas')) {
+				app.pointer.down = true;
+			}
+		});
+
+		addEventListener('pointermove', (event) => {
+			[app.pointer.x, app.pointer.y] = [event.clientX, event.clientY];
+
+			if (
+				event.target.closest('canvas') &&
+				app.pointer.down &&
+				Math.max(Math.abs(app.pointer.x - app.pointer.x0), Math.abs(app.pointer.y - app.pointer.y0)) > 1
+			) {
+				app.pointer.drag = true;
+			}
+		});
+
+		addEventListener('pointerup', (event) => {
+			[app.pointer.x, app.pointer.y] = [event.clientX, event.clientY];
+			[app.pointer.x0, app.pointer.y0] = [app.pointer.x, app.pointer.y];
+
+			if (event.target.closest('canvas') && !app.pointer.drag) {
+				let [pointerX, pointerY] = project([event.clientX, event.clientY]);
+				level[app.settings.tool][Math.floor(pointerX)] = Math.floor(pointerY);
+			}
+
+			app.pointer.down = false;
+			app.pointer.drag = false;
+		});
+
+		addEventListener('pointercancel', (event) => {
+			[app.pointer.x, app.pointer.y] = [event.clientX, event.clientY];
+			[app.pointer.x0, app.pointer.y0] = [app.pointer.x, app.pointer.y];
+
+			app.pointer.down = false;
+			app.pointer.drag = false;
+		});
+
+		addEventListener('input', (event) => {
+			app.settings[event.target.name] = event.target.value;
+			handleResize();
+		});
+
+		addEventListener('resize', () => {
+			handleResize();
+		});
+
+		handleResize();
+		requestAnimationFrame(loop);
+	</script>
+
+	<style>
+		:root {
+			color-scheme: only dark;
+		}
+
+		body {
+			&,
+			& *,
+			& *::before,
+			& *::after {
+				box-sizing: border-box;
+				margin: unset;
+				padding: unset;
+				background: unset;
+				border: unset;
+				color: inherit;
+				font: inherit;
+				text-decoration: inherit;
+			}
+
+			font:
+				normal 1em / 1.5 ui-sans-serif,
+				system-ui;
+			overflow: hidden;
+			-webkit-tap-highlight-color: unset;
+			-webkit-user-select: none;
+			user-select: none;
+
+			&::after {
+				content: attr(data-debug);
+				position: fixed;
+				top: 1em;
+				right: 1em;
+				z-index: 1;
+				pointer-events: none;
+				white-space: pre;
+				font-size: 12px;
+			}
+		}
+
+		canvas {
+			position: fixed;
+			inset: 0;
+			block-size: 100%;
+			inline-size: 100%;
+			image-rendering: pixelated;
+		}
+
+		form {
+			position: fixed;
+			inset: 1em auto auto 1em;
+		}
+
+		fieldset {
+			display: grid;
+		}
+	</style>
+
+	<canvas id="canvas"></canvas>
+
+	<form>
+		<fieldset>
+			<legend>Settings</legend>
+			<label>
+				Quality
+				<input type="range" name="quality" value="1" min="0.1" max="1" step="0.1" />
+			</label>
+			<label>
+				Zoom
+				<input type="range" name="zoom" value="1" min="0.1" max="10" step="0.1" />
+			</label>
+		</fieldset>
+		<fieldset>
+			<legend>Tools</legend>
+			<label>
+				<input type="radio" name="tool" value="ice" checked />
+				Ice
+			</label>
+			<label>
+				<input type="radio" name="tool" value="gas" />
+				Gas
+			</label>
+			<label>
+				<input type="radio" name="tool" value="flow" />
+				Flow
+			</label>
+		</fieldset>
+	</form>
+</html>

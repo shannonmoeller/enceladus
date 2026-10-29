@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<meta charset="utf-8" />
+
+	<link rel="apple-touch-icon" type="image/png" href="./assets/icon.png" />
+	<link rel="icon" type="image/png" href="./assets/icon.png" />
+
+	<title>Auto Miner</title>
+
+	<script type="module" blocking="render">
+		console.clear();
+
+		function createMachine(options) {
+			const { data, states, update, render } = options;
+
+			const machine = {
+				data,
+				states,
+
+				setState(state) {
+					data.state0 = data.state;
+					data.state = state;
+
+					states[data.state0]?.exit?.(data, machine);
+					states[data.state]?.enter?.(data, machine);
+				},
+
+				update() {
+					update?.(data, machine);
+					states[data.state]?.update?.(data, machine);
+				},
+
+				render() {
+					render?.(data, machine);
+					states[data.state]?.render?.(data, machine);
+				},
+			};
+
+			return machine;
+		}
+
+		const game = createMachine({
+			data: {
+				state0: null,
+				state: 'menu',
+			},
+
+			states: {
+				menu: {
+					enter() {
+						menuScreen.hidden = false;
+					},
+					exit() {
+						menuScreen.hidden = true;
+					},
+				},
+
+				paused: {
+					enter() {
+						pausedScreen.hidden = false;
+						playingScreen.hidden = false;
+					},
+					exit() {
+						pausedScreen.hidden = true;
+						playingScreen.hidden = true;
+					},
+				},
+
+				playing: {
+					enter() {
+						playingScreen.hidden = false;
+					},
+					update() {
+						miner.update();
+					},
+					render() {
+						miner.render();
+					},
+					exit() {
+						playingScreen.hidden = true;
+					},
+				},
+			},
+		});
+
+		const miner = createMachine({
+			data: {
+				state0: null,
+				state: 'visitMineAndDig',
+
+				location: 'home',
+				nuggets: 0,
+				money: 10,
+				thirst: 0,
+				fatigue: 0,
+			},
+
+			update(data) {
+				data.thirst += 1;
+			},
+
+			render(data) {
+				playingState.textContent = JSON.stringify(data, null, 2);
+			},
+
+			states: {
+				visitMineAndDig: {
+					enter(data) {
+						log('Walking to the mine.');
+						data.location = 'mine';
+					},
+					update(data, { setState }) {
+						if (Math.random() > 0.5) {
+							log('Digging... Picking up a nugget.');
+							data.fatigue += 1;
+							data.nuggets += 1;
+						} else {
+							log('Digging... Nothing.');
+							data.fatigue += 1;
+						}
+
+						if (data.fatigue >= 8) {
+							return setState('visitHomeAndSleep');
+						}
+
+						if (data.nuggets >= 10) {
+							return setState('visitBankAndDeposit');
+						}
+
+						if (data.thirst >= 20) {
+							return setState('visitSaloonAndDrink');
+						}
+					},
+					exit(data) {
+						log('Leaving the mine.');
+					},
+				},
+
+				visitHomeAndSleep: {
+					enter(data) {
+						log('Walking home.');
+						data.location = 'home';
+					},
+					update(data, { setState }) {
+						log('Snore.');
+						data.fatigue -= 1;
+
+						if (data.fatigue > 0) {
+							return;
+						}
+
+						if (data.thirst >= 20) {
+							return setState('visitSaloonAndDrink');
+						}
+
+						return setState('visitMineAndDig');
+					},
+					exit(data) {
+						log('Headed out.');
+					},
+				},
+
+				visitBankAndDeposit: {
+					enter(data) {
+						log('Walking to the bank.');
+						data.location = 'bank';
+					},
+					update(data, { setState }) {
+						log('Making a deposit.');
+						data.money += data.nuggets * 2;
+						data.nuggets = 0;
+
+						if (data.thirst >= 20) {
+							return setState('visitSaloonAndDrink');
+						}
+
+						return setState('visitMineAndDig');
+					},
+					exit(data) {
+						log('Leaving the bank.');
+					},
+				},
+
+				visitSaloonAndDrink: {
+					enter(data) {
+						log('Walking to the saloon.');
+						data.location = 'saloon';
+					},
+					update(data, { setState }) {
+						log('Ahh...');
+						data.money -= 1;
+						data.thirst = 0;
+
+						return setState('visitMineAndDig');
+					},
+					exit(data) {
+						log('Leaving the saloon.');
+					},
+				},
+			},
+		});
+
+		function log(value) {
+			let isAtBottom = playingActions.scrollHeight - playingActions.clientHeight - playingActions.scrollTop < 10;
+
+			playingActions.append(`> ${value}\n`);
+
+			if (isAtBottom) {
+				playingActions.scrollTop = playingActions.scrollHeight;
+			}
+		}
+
+		addEventListener('click', (event) => {
+			const button = event.target.closest('button');
+
+			if (button?.value) game.setState(button.value);
+		});
+
+		setTimeout(function loop() {
+			game.update();
+			game.render();
+			setTimeout(loop, 1000);
+		});
+	</script>
+
+	<style>
+		:root {
+			color-scheme: only dark;
+			block-size: 100%;
+		}
+
+		body {
+			&,
+			& *,
+			& *::before,
+			& *::after {
+				box-sizing: border-box;
+				margin: unset;
+				padding: unset;
+				background: unset;
+				border: unset;
+				color: inherit;
+				font: inherit;
+				text-decoration: inherit;
+			}
+
+			& [hidden] {
+				display: none !important;
+			}
+
+			display: grid;
+			place-content: safe center;
+			min-block-size: 100%;
+			font: normal 1rem / 1.5 system-ui;
+			-webkit-tap-highlight-color: unset;
+		}
+
+		article {
+			position: fixed;
+			inset: 0;
+		}
+
+		button {
+			background: color-mix(in oklch, canvas, canvastext 20%);
+			border-radius: 0.25rem;
+			padding: 0.25rem 1rem;
+		}
+
+		#menuScreen {
+			display: grid;
+			place-content: safe center;
+			gap: 0.5rlh;
+
+			& h1 {
+				font-size: 2rem;
+			}
+		}
+
+		#playingScreen {
+			display: grid;
+			grid-template-rows: min-content auto;
+
+			& button {
+				position: fixed;
+				inset: 0.5rlh 0.5rlh auto auto;
+			}
+
+			& pre {
+				overflow: auto;
+			}
+		}
+
+		#pausedScreen {
+			display: grid;
+			place-content: safe center;
+			gap: 0.5rlh;
+			background: oklch(from canvas l c h / 0.8);
+			backdrop-filter: blur(0.1rem);
+		}
+
+		#playingActions {
+			border-block-start: 1px solid;
+		}
+	</style>
+
+	<article id="menuScreen">
+		<h1>⛏️ Auto Miner</h1>
+		<button type="button" value="playing">Play</button>
+	</article>
+
+	<article id="playingScreen" hidden>
+		<button type="button" value="paused">Pause</button>
+		<pre id="playingState"></pre>
+		<pre id="playingActions"></pre>
+	</article>
+
+	<article id="pausedScreen" hidden>
+		<button type="button" value="playing">Resume</button>
+		<button type="button" value="menu">Menu</button>
+	</article>
+</html>

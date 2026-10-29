@@ -184,7 +184,7 @@ export function constrainAll(particles, options = {}) {
 	}
 
 	for (let cell of cells.values()) {
-		let neighbors = [...cell];
+		let neighbors = cell.slice(0);
 		let { length } = neighbors;
 
 		for (let i = 0; i < length; i++) {

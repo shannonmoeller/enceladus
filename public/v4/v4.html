@@ -1,0 +1,175 @@
+<!doctype html>
+<html lang="en">
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<meta charset="utf-8" />
+
+	<link rel="apple-touch-icon" type="image/png" href="./assets/icon.png" />
+	<link rel="icon" type="image/png" href="./assets/icon.png" />
+
+	<title>Enceladus 4</title>
+
+	<script type="module" blocking="render">
+		// Canvas
+
+		let canvas = document.getElementById('canvas');
+		let ctx = canvas.getContext('2d');
+
+		let quality = 1;
+		let scale = devicePixelRatio * quality;
+
+		function resize() {
+			canvas.width = innerWidth * scale;
+			canvas.height = innerHeight * scale;
+
+			ctx.width = innerWidth;
+			ctx.height = innerHeight;
+		}
+
+		resize();
+
+		// State
+
+		let time = performance.now();
+		let time0 = 0;
+
+		let deltaMin = 1 / 240;
+		let deltaMax = 1 / 30;
+		let delta = 1 / 60;
+		let delta0 = 1 / 60;
+		let deltaPow2 = delta ** 2;
+		let deltaScale = delta / delta0;
+
+		let gravity = 9.81 * 100;
+		let accX = 0 * deltaPow2;
+		let accY = gravity * deltaPow2;
+		let dragX = 0.98;
+		let dragY = 0.98;
+
+		let keyboard = {};
+		let camera = { x: 0, y: 0 };
+		let player = { x: 0, y: 0, x0: -3, y0: 12 };
+		let floor = 250;
+
+		// Loop
+
+		requestAnimationFrame(function loop(now) {
+			time0 = time;
+			time = now;
+
+			update();
+			render();
+
+			requestAnimationFrame(loop);
+		});
+
+		// Update
+
+		function update() {
+			delta0 = delta;
+			delta = Math.max(deltaMin, Math.min(deltaMax, (time - time0) / 1000));
+			deltaPow2 = delta ** 2;
+			deltaScale = delta / delta0;
+
+			accX = 0 * deltaPow2;
+			accY = gravity * deltaPow2;
+			dragX = 0.98;
+			dragY = 0.98;
+
+			moveParticle(player);
+			resolveFloor(player);
+		}
+
+		function moveParticle(particle) {
+			let { x, x0, y, y0 } = particle;
+
+			particle.x = x + (x - x0) * dragX * deltaScale + accX;
+			particle.x0 = x;
+
+			particle.y = y + (y - y0) * dragY * deltaScale + accY;
+			particle.y0 = y;
+		}
+
+		function resolveFloor(particle) {
+			let { y, y0 } = particle;
+
+			if (y > floor) {
+				particle.y = floor;
+				particle.y0 = floor + (y - y0);
+			}
+		}
+
+		// Render
+
+		function render() {
+			ctx.setTransform(scale, 0, 0, scale, 0, 0);
+			ctx.clearRect(0, 0, ctx.width, ctx.height);
+			ctx.translate(ctx.width / 2 - camera.x, ctx.height / 2 - camera.y);
+
+			ctx.fillStyle = 'rgb(from white r g b / 0.1)';
+			ctx.fillRect(camera.x - ctx.width / 2, floor, ctx.width, ctx.height - floor);
+
+			ctx.fillStyle = 'cyan';
+			ctx.fillRect(player.x0 - 4, player.y0 - 4, 8, 8);
+			ctx.fillStyle = 'white';
+			ctx.fillRect(player.x - 4, player.y - 4, 8, 8);
+		}
+
+		// Events
+
+		addEventListener('resize', resize, { passive: true });
+
+		addEventListener('keydown', (event) => {
+			keyboard[event.key] = true;
+		});
+
+		addEventListener('keyup', (event) => {
+			delete keyboard[event.key];
+		});
+
+		addEventListener('visibilitychange', () => {
+			keyboard = {};
+		});
+	</script>
+
+	<style>
+		:root {
+			color-scheme: only dark;
+		}
+
+		body {
+			&,
+			& *,
+			& *::before,
+			& *::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			overflow: hidden;
+			-webkit-tap-highlight-color: unset;
+			-webkit-user-select: none;
+			user-select: none;
+
+			&::after {
+				content: attr(data-debug);
+				position: fixed;
+				z-index: 1;
+				pointer-events: none;
+				white-space: pre;
+				font-size: 12px;
+			}
+		}
+
+		canvas {
+			position: fixed;
+			inset: 0;
+			block-size: 100%;
+			inline-size: 100%;
+			image-rendering: pixelated;
+			image-rendering: crisp-edges;
+		}
+	</style>
+
+	<canvas id="canvas"></canvas>
+</html>
